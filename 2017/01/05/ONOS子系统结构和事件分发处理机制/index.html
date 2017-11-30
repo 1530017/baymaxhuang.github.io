@@ -1,0 +1,924 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="ONOS,SubSystem,子系统,Event,事件分发," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Dabai的个人博客" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="ONOS是一个支持分布式的复杂网络操作系统，ONOS的设计高度层次化，模块化和抽象化，ONOS不同的模块和组件一般都使用特定的接口类型和异步事件机制通信协作。因此，理解ONOS子系统结构和事件分发处理机制对进一步深入了解ONOS是有很大帮助的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ONOS子系统结构和事件分发处理机制">
+<meta property="og:url" content="http://yoursite.com/2017/01/05/ONOS子系统结构和事件分发处理机制/index.html">
+<meta property="og:site_name" content="Dabai的个人博客">
+<meta property="og:description" content="ONOS是一个支持分布式的复杂网络操作系统，ONOS的设计高度层次化，模块化和抽象化，ONOS不同的模块和组件一般都使用特定的接口类型和异步事件机制通信协作。因此，理解ONOS子系统结构和事件分发处理机制对进一步深入了解ONOS是有很大帮助的。">
+<meta property="og:image" content="http://oj37kd49l.bkt.clouddn.com/ONOS%20Subsystem%20Structure.png">
+<meta property="og:image" content="http://oj37kd49l.bkt.clouddn.com/EventDeliveryService.png">
+<meta property="og:image" content="http://oj37kd49l.bkt.clouddn.com/CoreEventDispatcher.png">
+<meta property="og:image" content="http://oj37kd49l.bkt.clouddn.com/ONOS%20Event.png">
+<meta property="og:image" content="http://oj37kd49l.bkt.clouddn.com/AbstractProviderRegistry.png">
+<meta property="og:image" content="http://oj37kd49l.bkt.clouddn.com/ListenerRegistry.png">
+<meta property="og:updated_time" content="2017-03-27T07:05:11.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ONOS子系统结构和事件分发处理机制">
+<meta name="twitter:description" content="ONOS是一个支持分布式的复杂网络操作系统，ONOS的设计高度层次化，模块化和抽象化，ONOS不同的模块和组件一般都使用特定的接口类型和异步事件机制通信协作。因此，理解ONOS子系统结构和事件分发处理机制对进一步深入了解ONOS是有很大帮助的。">
+<meta name="twitter:image" content="http://oj37kd49l.bkt.clouddn.com/ONOS%20Subsystem%20Structure.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/01/05/ONOS子系统结构和事件分发处理机制/"/>
+
+
+
+
+
+  <title> ONOS子系统结构和事件分发处理机制 | Dabai的个人博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Dabai的个人博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/05/ONOS子系统结构和事件分发处理机制/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dabai">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.png">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Dabai的个人博客">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Dabai的个人博客" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                ONOS子系统结构和事件分发处理机制
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-05T00:09:20+08:00">
+                2017-01-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ONOS/" itemprop="url" rel="index">
+                    <span itemprop="name">ONOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <a href="/2017/01/05/ONOS子系统结构和事件分发处理机制/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/01/05/ONOS子系统结构和事件分发处理机制/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>ONOS是一个支持分布式的复杂网络操作系统，ONOS的设计高度层次化，模块化和抽象化，ONOS不同的模块和组件一般都使用特定的接口类型和异步事件机制通信协作。因此，理解ONOS子系统结构和事件分发处理机制对进一步深入了解ONOS是有很大帮助的。</p>
+<a id="more"></a>
+<h1 id="1-ONOS子系统结构"><a href="#1-ONOS子系统结构" class="headerlink" title="1. ONOS子系统结构"></a>1. ONOS子系统结构</h1><p>ONOS有很多子系统，但不同的子系统的层次和结构是相同的。下面是ONOS子系统的结构图：</p>
+<p><img src="http://oj37kd49l.bkt.clouddn.com/ONOS%20Subsystem%20Structure.png" alt=""></p>
+<p>ONOS子系统主要包括App，Core，Provider，Protocol四部分。其中，Core是对网络的抽象，是协议无关的(protocol agnostic), 对上提供统一抽象的北向接口。Core中的组件主要包括Manager和Store，如FlowRuleManager和FlowRuleStore等。而Provider是协议相关的，主要为ONOS Core提供抽象的数据类型，Provider通过Core提供的ProviderService接口向Core注入网络信息，Provider也会暴露Provider接口给Core，接收来自Core的command消息。Protocol模块则是根据特定的协议类型通网路设备建立连接，Protocol模块一般是和对应的Provider模块共同启动的。</p>
+<p>其中，Core中的Manager和Store是本次分析的重点。Manager对北实现Service和AdminService接口，对南实现ProviderRegistry和 ProviderService接口。Store则负责数据的存储，查询，更新以及东西向同步等，所有来自Manager中与数据相关的操作都会通过Store来完成。另外，Manager也会将Store中的事件抛出并实现ListenerService接口，其它应用通过ListenerService接口即可实现事件的监听，下面将详细分析这一过程。</p>
+<h1 id="2-ONOS系统事件分发处理机制"><a href="#2-ONOS系统事件分发处理机制" class="headerlink" title="2. ONOS系统事件分发处理机制"></a>2. ONOS系统事件分发处理机制</h1><h2 id="2-1-了解ONOS系统中的事件Event和EventSink"><a href="#2-1-了解ONOS系统中的事件Event和EventSink" class="headerlink" title="2.1 了解ONOS系统中的事件Event和EventSink"></a>2.1 了解ONOS系统中的事件Event和EventSink</h2><p>事件一般是由Store产生，用一种特定的类来表示一种事件类型，如AppIdEvent，DeviceEvent，FLowRuleEvent等，所有的事件类型实现Event接口，Event包括事件类型和事件主题，分别通过枚举类型和字符串类型来表示，表示一种特定的事件类型。每个事件最终会分发到一个对应的事件槽（EventSink），即事件传播处理的终点，系统调用事件槽的process函数处理对应的事件。下面分别是Event和EventSink的接口定义源码，二者都是泛型接口，接口的源码注释清楚的说明了这两个接口的作用。</p>
+<p>Event接口：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Abstraction of an of a time-stamped event pertaining to an arbitrary subject.</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Event</span>&lt;<span class="title">T</span> <span class="keyword">extends</span> <span class="title">Enum</span>, <span class="title">S</span>&gt; </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Returns the timestamp of when the event occurred, given in milliseconds</div><div class="line">     * since the start of epoch.</div><div class="line">     *</div><div class="line">     * <span class="doctag">@return</span> timestamp in milliseconds</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">long</span> <span class="title">time</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Returns the type of the event.</div><div class="line">     *</div><div class="line">     * <span class="doctag">@return</span> event type</div><div class="line">     */</div><div class="line">    <span class="function">T <span class="title">type</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Returns the subject of the event.</div><div class="line">     *</div><div class="line">     * <span class="doctag">@return</span> subject to which this event pertains</div><div class="line">     */</div><div class="line">    <span class="function">S <span class="title">subject</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>EventSink接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Abstraction of an event sink capable of processing the specified event types.</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">EventSink</span>&lt;<span class="title">E</span> <span class="keyword">extends</span> <span class="title">Event</span>&gt; </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Processes the specified event.</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> event event to be processed</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">process</span><span class="params">(E event)</span></span>;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Handles notification that event processing time limit has been exceeded.</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">onProcessLimit</span><span class="params">()</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="2-2-事件的分发服务EventDeliveryService"><a href="#2-2-事件的分发服务EventDeliveryService" class="headerlink" title="2.2 事件的分发服务EventDeliveryService"></a>2.2 事件的分发服务EventDeliveryService</h2><p><img src="http://oj37kd49l.bkt.clouddn.com/EventDeliveryService.png" alt=""></p>
+<p>上面是EventDeliveryService的UML图，可以很容易的发现EventDeliveryService继承了两个接口，EventDispatcher和EventSinkRegistry，前者负责事件的分发（post），后者负责事件槽的管理（addSink和removeSink），ONOS子系统通过使用该服务，就能实现将事件正确分发到对应的事件槽，EventDeliveryService一般在子系统的Manager中使用。</p>
+<h2 id="2-3-EventDeliveryService服务的实现"><a href="#2-3-EventDeliveryService服务的实现" class="headerlink" title="2.3 EventDeliveryService服务的实现"></a>2.3 EventDeliveryService服务的实现</h2><p>EventDeliveryService服务是通过CoreEventDispatcher类来实现，该类被声明为一个OSGi Component，由OSGi进行管理。废话不多说，还是直接看CoreEventDispatcher的UML结构图：</p>
+<p><img src="http://oj37kd49l.bkt.clouddn.com/CoreEventDispatcher.png" alt=""></p>
+<p>由于该类比较复杂，没有显示该类的成员变量。事件的最终分发处理是由内部类DispatchLoop处理，该类实现了Runnable接口，从而使用独立的线程处理特定的事件组。DispatchLoop里有一个保存事件队列的重要成员变量eventsQueue，声明如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Auxiliary event dispatching loop that feeds off the events queue.</span></div><div class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">DispatchLoop</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String name;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> stopped;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> EventSink lastSink;</div><div class="line">    <span class="comment">// Means to detect long-running sinks</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Stopwatch stopwatch = Stopwatch.createUnstarted();</div><div class="line">    <span class="keyword">private</span> TimerTask watchdog;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> Future&lt;?&gt; dispatchFuture;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> BlockingQueue&lt;Event&gt; eventsQueue;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ExecutorService executor;</div><div class="line">    ......</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>eventsQueue是BlockingQueue<event>类型，是一个阻塞队列，关于Java阻塞队列的功能和作用，参考：<a href="http://www.infoq.com/cn/articles/java-blocking-queue" target="_blank" rel="external">聊聊并发（七）——Java中的阻塞队列</a>。EventDeliveryService的post方法最终会调用DispatchLoop的add方法将事件加入到这个队列，是程序主动调用的，DispatchLoop里的线程方法（run）会不断的取出事件并调用对应的事件槽处理函数处理对应事件。熟悉多线程协作以及设计模式的朋友应该会注意到这里所用的也就是<strong>生产者-消费者模式</strong>，参考：<a href="http://www.infoq.com/cn/articles/producers-and-consumers-mode" target="_blank" rel="external">聊聊并发——生产者消费者模式</a>。</event></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">    stopped = <span class="keyword">false</span>;</div><div class="line">    log.info(<span class="string">"Dispatch loop initiated"</span>);</div><div class="line">    <span class="keyword">while</span> (!stopped) &#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="comment">// Fetch the next event and if it is the kill-pill, bail</span></div><div class="line">            Event event = eventsQueue.take();</div><div class="line">            <span class="keyword">if</span> (event == KILL_PILL) &#123;</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            &#125;</div><div class="line">            process(event);</div><div class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">            log.warn(<span class="string">"Dispatch loop interrupted"</span>);</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception | Error e) &#123;</div><div class="line">            log.warn(<span class="string">"Error encountered while dispatching event:"</span>, e);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    log.info(<span class="string">"Dispatch loop terminated"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Locate the sink for the event class and use it to process the event</span></div><div class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">process</span><span class="params">(Event event)</span> </span>&#123;</div><div class="line">    EventSink sink = getSink(event.getClass());</div><div class="line">    <span class="keyword">if</span> (sink != <span class="keyword">null</span>) &#123;</div><div class="line">        lastSink = sink;</div><div class="line">        stopwatch.start();</div><div class="line">        sink.process(event);</div><div class="line">        stopwatch.reset();</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        log.warn(<span class="string">"No sink registered for event class &#123;&#125;"</span>,</div><div class="line">                    event.getClass().getName());</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面就是CoreEventDispatcher分发处理事件到对应事件槽的大概流程，这里就不对CoreEventDispatcher的实现细节进一步分析了，要了解程序的更多实现细节，需要阅读源码。</p>
+<h2 id="2-4-添加事件监听者处理事件"><a href="#2-4-添加事件监听者处理事件" class="headerlink" title="2.4 添加事件监听者处理事件"></a>2.4 添加事件监听者处理事件</h2><p>下面是ONOS子系统中的事件分发示意图：</p>
+<p><img src="http://oj37kd49l.bkt.clouddn.com/ONOS%20Event.png" alt=""></p>
+<p>Manager对数据的操作导致Store产生事件，Store通过StoreDelegate的notify方法向Manager通告事件。AbstractStore类中有基本Store接口的实现，一般Store的实现类都会继承AbstractStore基础类，该类中的notifyDelegate方法会调用StoreDelegate的notify方法。Manager使用内部类实现StoreDelegate接口，notify方法的实现会调用post方法，post方法最终使用EventDeliveryService服务分发事件。post方法在AbstractListenerManager或AbstractListenerProviderRegistry中有实现，Manager组件一般都会继承AbstractListenerManager或AbstractListenerProviderRegistry基础类。下面是AbstractStore和AbstractListenerProviderRegistry的UML图如下所示：</p>
+<p><img src="http://oj37kd49l.bkt.clouddn.com/AbstractProviderRegistry.png" alt=""></p>
+<p>外部应用通过实现EventListener接口构造一个事件监听者，使用ListenerService的addListener方法完成监听者的注册，AbstractListenerManager和AbstractListenerProviderRegistry类都实现了ListenerService接口。AbstractListenerManager或AbstractListenerProviderRegistry基础类中有一个重要的对象成员：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">......</div><div class="line"><span class="keyword">protected</span> <span class="keyword">final</span> ListenerRegistry&lt;E, L&gt; listenerRegistry = <span class="keyword">new</span> ListenerRegistry&lt;&gt;();</div><div class="line">.....</div></pre></td></tr></table></figure>
+<p>监听者注册最终会使用调用该成员对象的addListener方法，ListenerRegistry实现了ListenerService和EventSink接口，从而将事件(Event)，事件槽(EventSink)，监听者(EventListener)联系起来。</p>
+<p><img src="http://oj37kd49l.bkt.clouddn.com/ListenerRegistry.png" alt=""></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Base implementation of an event sink and a registry capable of tracking</div><div class="line"> * listeners and dispatching events to them as part of event sink processing.</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ListenerRegistry</span>&lt;<span class="title">E</span> <span class="keyword">extends</span> <span class="title">Event</span>, <span class="title">L</span> <span class="keyword">extends</span> <span class="title">EventListener</span>&lt;<span class="title">E</span>&gt;&gt;</span></div><div class="line">        <span class="keyword">implements</span> <span class="title">ListenerService</span>&lt;<span class="title">E</span>, <span class="title">L</span>&gt;, <span class="title">EventSink</span>&lt;<span class="title">E</span>&gt; &#123;</div><div class="line">    ......</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Set of listeners that have registered.</div><div class="line">     */</div><div class="line">    <span class="keyword">protected</span> <span class="keyword">final</span> Set&lt;L&gt; listeners = <span class="keyword">new</span> CopyOnWriteArraySet&lt;&gt;();</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addListener</span><span class="params">(L listener)</span> </span>&#123;</div><div class="line">        checkNotNull(listener, <span class="string">"Listener cannot be null"</span>);</div><div class="line">        listeners.add(listener);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeListener</span><span class="params">(L listener)</span> </span>&#123;</div><div class="line">        checkNotNull(listener, <span class="string">"Listener cannot be null"</span>);</div><div class="line">        <span class="keyword">if</span> (!listeners.remove(listener)) &#123;</div><div class="line">            log.warn(<span class="string">"Listener &#123;&#125; not registered"</span>, listener);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">process</span><span class="params">(E event)</span> </span>&#123;</div><div class="line">        <span class="keyword">for</span> (L listener : listeners) &#123;</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                lastListener = listener;</div><div class="line">                lastStart = System.currentTimeMillis();</div><div class="line">                <span class="keyword">if</span> (listener.isRelevant(event)) &#123;</div><div class="line">                    listener.event(event);</div><div class="line">                &#125;</div><div class="line">                lastStart = <span class="number">0</span>;</div><div class="line">            &#125; <span class="keyword">catch</span> (Exception error) &#123;</div><div class="line">                reportProblem(event, error);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    ......</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>ListenerRegistry使用线程安全的集合CopyOnWriteArraySet管理监听者，EventSink的process方法就是逐个的执行EventListener的event方法。Manager使用EventDeliveryService的addSink方法将自己管理的事件和对应的事件槽联系起来。下面是FlowRuleManager的代码示例：</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> FlowRuleStoreDelegate delegate = <span class="keyword">new</span> InternalStoreDelegate();</div><div class="line">······</div><div class="line"><span class="meta">@Activate</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">activate</span><span class="params">(ComponentContext context)</span> </span>&#123;</div><div class="line">    ......</div><div class="line">    store.setDelegate(delegate);</div><div class="line">    eventDispatcher.addSink(FlowRuleEvent.class, listenerRegistry);</div><div class="line">    ......</div><div class="line">    log.info(<span class="string">"Started"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="3-总结"><a href="#3-总结" class="headerlink" title="3. 总结"></a>3. 总结</h1><p>总的来说，ONOS子系统功能复杂但结构清晰，ONOS子系统的结构具有模块化，层次化，抽象化的特点。Manager是子系统的核心，负责将服务，存储，以及事件联系起来。Manager实现ListenerService接口，管理事件监听者的注册和移除，事件的分发和处理调度由EventDeliveryService统一管理。</p>
+<p>参考：</p>
+<ul>
+<li><a href="https://wiki.onosproject.org/display/ONOS/System+Components" target="_blank" rel="external">ONOS System Components</a></li>
+<li><a href="http://www.infoq.com/cn/articles/java-blocking-queue" target="_blank" rel="external">聊聊并发（七）——Java中的阻塞队列</a></li>
+<li><a href="http://www.infoq.com/cn/articles/producers-and-consumers-mode" target="_blank" rel="external">聊聊并发——生产者消费者模式</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ONOS/" rel="tag"># ONOS</a>
+          
+            <a href="/tags/SubSystem/" rel="tag"># SubSystem</a>
+          
+            <a href="/tags/子系统/" rel="tag"># 子系统</a>
+          
+            <a href="/tags/Event/" rel="tag"># Event</a>
+          
+            <a href="/tags/事件分发/" rel="tag"># 事件分发</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/10/ONOS中的OpenFlow-Channel状态机解析/" rel="next" title="ONOS中的OpenFlow Channel状态机解析">
+                <i class="fa fa-chevron-left"></i> ONOS中的OpenFlow Channel状态机解析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/15/Flow-Rule-Subsystem简要分析/" rel="prev" title="Flow Rule Subsystem简要分析">
+                Flow Rule Subsystem简要分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Dabai" />
+          <p class="site-author-name" itemprop="name">Dabai</p>
+          <p class="site-description motion-element" itemprop="description">写点可以沉淀下来的东西</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">29</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/baymaxhuang" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.facebook.com/huanghuibai" target="_blank" title="Facebook">
+                  
+                    <i class="fa fa-fw fa-facebook"></i>
+                  
+                  Facebook
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:baymaxhuang@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-ONOS子系统结构"><span class="nav-number">1.</span> <span class="nav-text">1. ONOS子系统结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-ONOS系统事件分发处理机制"><span class="nav-number">2.</span> <span class="nav-text">2. ONOS系统事件分发处理机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-了解ONOS系统中的事件Event和EventSink"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 了解ONOS系统中的事件Event和EventSink</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-事件的分发服务EventDeliveryService"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 事件的分发服务EventDeliveryService</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-EventDeliveryService服务的实现"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 EventDeliveryService服务的实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-添加事件监听者处理事件"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 添加事件监听者处理事件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-总结"><span class="nav-number">3.</span> <span class="nav-text">3. 总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Dabai</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'dabais-blog';
+      var disqus_identifier = '2017/01/05/ONOS子系统结构和事件分发处理机制/';
+
+      var disqus_title = "ONOS子系统结构和事件分发处理机制";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

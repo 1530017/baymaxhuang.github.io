@@ -1,0 +1,983 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java,OSGi,Felix," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Dabai的个人博客" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="OSGi(Open Service Gateway Initiative)，其英文定义为：The Dynamic Module System for Java。由此可见，OSGi的主要职责就是为了让开发者能够构建动态化、模块化的Java系统。使用OSGi，系统的各个组件就像插件一样，暴露特定的接口，实现“即插即用”。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OSGi简介与基于OSGi框架（Felix）的简单应用实现">
+<meta property="og:url" content="http://yoursite.com/2016/12/08/OSGi简介与基于OSGi框架（Felix）的简单应用的实现/index.html">
+<meta property="og:site_name" content="Dabai的个人博客">
+<meta property="og:description" content="OSGi(Open Service Gateway Initiative)，其英文定义为：The Dynamic Module System for Java。由此可见，OSGi的主要职责就是为了让开发者能够构建动态化、模块化的Java系统。使用OSGi，系统的各个组件就像插件一样，暴露特定的接口，实现“即插即用”。">
+<meta property="og:image" content="http://oj37kd49l.bkt.clouddn.com/bundle.png">
+<meta property="og:image" content="http://oj37kd49l.bkt.clouddn.com/osgi-service-registry.jpg">
+<meta property="og:updated_time" content="2017-03-20T06:56:02.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OSGi简介与基于OSGi框架（Felix）的简单应用实现">
+<meta name="twitter:description" content="OSGi(Open Service Gateway Initiative)，其英文定义为：The Dynamic Module System for Java。由此可见，OSGi的主要职责就是为了让开发者能够构建动态化、模块化的Java系统。使用OSGi，系统的各个组件就像插件一样，暴露特定的接口，实现“即插即用”。">
+<meta name="twitter:image" content="http://oj37kd49l.bkt.clouddn.com/bundle.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/12/08/OSGi简介与基于OSGi框架（Felix）的简单应用的实现/"/>
+
+
+
+
+
+  <title> OSGi简介与基于OSGi框架（Felix）的简单应用实现 | Dabai的个人博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Dabai的个人博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/08/OSGi简介与基于OSGi框架（Felix）的简单应用的实现/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dabai">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.png">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Dabai的个人博客">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Dabai的个人博客" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                OSGi简介与基于OSGi框架（Felix）的简单应用实现
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-08T15:50:04+08:00">
+                2016-12-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/OSGi/" itemprop="url" rel="index">
+                    <span itemprop="name">OSGi</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <a href="/2016/12/08/OSGi简介与基于OSGi框架（Felix）的简单应用的实现/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/12/08/OSGi简介与基于OSGi框架（Felix）的简单应用的实现/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>OSGi(Open Service Gateway Initiative)，其英文定义为：The Dynamic Module System for Java。由此可见，OSGi的主要职责就是为了让开发者能够构建动态化、模块化的Java系统。使用OSGi，系统的各个组件就像插件一样，暴露特定的接口，实现“即插即用”。</p>
+<a id="more"></a>
+<h1 id="1-OSGi的基本概念"><a href="#1-OSGi的基本概念" class="headerlink" title="1. OSGi的基本概念"></a>1. OSGi的基本概念</h1><h2 id="1-1-bundle"><a href="#1-1-bundle" class="headerlink" title="1.1 bundle"></a>1.1 bundle</h2><p>在OSGi中，各个组件以bundle的形式存在，但从形式上讲，bundle也就是在META-INF目录下的MANIFEST.MF文件中加入了OSGi特定描述的jar包。bundle的生命周期被OSGi框架所管理，具有如下几个状态：INSTALLED, RESOLVED,STARTING, ACTIVE, STOPPING,  UNINSTALLED。bundle各个生命周期状态的转换如下图所示：</p>
+<p><img src="http://oj37kd49l.bkt.clouddn.com/bundle.png" alt=""></p>
+<p>bundle通过配置jar包中的MANIFEST.MF文件控制从bundle导出的包。而没有导出的包在bundle外部不能使用，这样就很好的完成了内部类和外部类的隔离。bundle可以被动态的安装、启动、停止和卸载。bundle是服务（Service）和组件（Component）的载体。事实上，不管是通过BundleContext注册和获取服务的方式，还是Declarative Service进行声明注入的方式，都是在编写bundle。</p>
+<p>在OSGi中，每个bundle都有独立于其它bundle的ClassLoader，正因为这样，各个bundle的类是相互隔离的。但一个bundle可能会用到另外一个bundle的类，bundle之间的交户通过以下三种方式实现：</p>
+<ul>
+<li><p>Export-Package：根据OSGi规范，每个工程可以通过声明Export-Package对外提供访问此工程中的类和接口，可以先把bundle导出，再导入到需要调用的bundle中，默认情况下一个bundle中所有的Package对外都是不可见的。</p>
+</li>
+<li><p>OSGi服务：通过将要对外提供功能声明为OSGi的服务实现面向接口、面向服务式的设计。一个bundle作为Service的提供方，对外提供Service，使用者可以查找到提供的Service。提供使用Service有三种方式：</p>
+<ul>
+<li>通过BundleContext（bundle的上下文）来提供和获取；</li>
+<li>使用Declarative Service来获取；</li>
+<li>使用Blueprint来获取；</li>
+</ul>
+</li>
+<li><p>Event：OSGi的Event服务也是实现模块交互的一种可选方法，模块对外发布事件，订阅了此事件的模块就会相应地接收到消息，从而做出反应，以达到交互的目的。</p>
+</li>
+</ul>
+<h2 id="1-2-OSGi-Service"><a href="#1-2-OSGi-Service" class="headerlink" title="1.2 OSGi Service"></a>1.2 OSGi Service</h2><p> 一个OSGi Service就是注册到OSGi框架中的Java对象的引用。在注册的时候可以设置这个Service的属性，从而在获取Service的时候可以进行过滤。OSGi拥有一个集中的服务注册中心，它遵循<strong>发布-查询-绑定</strong>模型，如下图所示。</p>
+<p> <img src="http://oj37kd49l.bkt.clouddn.com/osgi-service-registry.jpg" alt=""></p>
+<p> bundle可以通过bundle的上下文去注册Service或去查询Service，获取对应服务的对象引用。当然还有其它方式实现OSGi Service，就是上面提到的声明式服务和Blueprint服务。关于OSGi Service使用方式的选择问题，参考：</p>
+<p> <a href="http://www.infoq.com/cn/news/2013/12/osgi-blueprint-or-ds" target="_blank" rel="external">OSGi中该使用Blueprint还是声明式服务?</a></p>
+<p> 后面的例子将介绍使用BundleContext注册和获取OSGi Service。</p>
+<h2 id="1-3-OSGi框架"><a href="#1-3-OSGi框架" class="headerlink" title="1.3 OSGi框架"></a>1.3 OSGi框架</h2><p>OSGi框架可以看做实现了OSGi规范的容器，使用OSGi框架，可以实现各种bundle的“即插即用”，目前流行的框架包括Equinox和Felix，下面的简单应用是基于Felix框架实现的。</p>
+<h1 id="2-基于OSGi框架（Felix）简单应用的实现"><a href="#2-基于OSGi框架（Felix）简单应用的实现" class="headerlink" title="2. 基于OSGi框架（Felix）简单应用的实现"></a>2. 基于OSGi框架（Felix）简单应用的实现</h1><p>下面将介绍使用Maven工具和Felix框架实现OSGi简单应用，源码链接：</p>
+<ul>
+<li><a href="https://github.com/baymaxhuang/osgi-provider" target="_blank" rel="external">osgi-provider</a></li>
+<li><a href="https://github.com/baymaxhuang/osgi-consumer" target="_blank" rel="external">osgi-consumer</a></li>
+</ul>
+<h2 id="2-1-使用BundleContext注册和获取OSGi-Service"><a href="#2-1-使用BundleContext注册和获取OSGi-Service" class="headerlink" title="2.1 使用BundleContext注册和获取OSGi Service"></a>2.1 使用BundleContext注册和获取OSGi Service</h2><p>使用两个bundle分别实现服务的注册和获取，由服务提供者（Service Provider）注册OSGi服务，服务消费者（Service Consumer）获取服务，Service Provider使用接口提供服务，而Service Consumer也将使用接口获取对应服务的实例化对象。</p>
+<h3 id="2-1-1-定义服务并注册"><a href="#2-1-1-定义服务并注册" class="headerlink" title="2.1.1 定义服务并注册"></a>2.1.1 定义服务并注册</h3><ul>
+<li><p>定义服务接口HelloWorldService</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">package org.hhb.osgi.provider.api;</div><div class="line"></div><div class="line">public interface HelloWorldService &#123;</div><div class="line">    public void hello();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>实现服务HelloWorldServiceImpl</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">package org.hhb.osgi.provider.impl;</div><div class="line"></div><div class="line">import org.hhb.osgi.provider.api.HelloWorldService;</div><div class="line"></div><div class="line">public class HelloWorldServiceImpl implements HelloWorldService &#123;</div><div class="line">    @Override</div><div class="line">    public void hello()&#123;</div><div class="line">        System.out.println(&quot;Hello World !&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>实现BundleActivator接口注册服务并实例化服务对象</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">package org.hhb.osgi.provider;</div><div class="line"></div><div class="line">import org.hhb.osgi.provider.api.HelloWorldService;</div><div class="line">import org.hhb.osgi.provider.impl.HelloWorldServiceImpl;</div><div class="line">import org.osgi.framework.BundleActivator;</div><div class="line">import org.osgi.framework.BundleContext;</div><div class="line">import org.osgi.framework.ServiceRegistration;</div><div class="line"></div><div class="line">public class HelloActivator implements BundleActivator &#123;</div><div class="line">    private ServiceRegistration registration;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void start(BundleContext bundleContext) throws Exception &#123;</div><div class="line">        registration = bundleContext.registerService(</div><div class="line">                HelloWorldService.class.getName(),</div><div class="line">                new HelloWorldServiceImpl(),</div><div class="line">                null);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void stop(BundleContext bundleContext) throws Exception &#123;</div><div class="line">        registration.unregister();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>  需要注意的是，上面的start和stop方法将分别在bundle start和stop时被调用。</p>
+</li>
+<li><p>使用maven-bundle-plugin插件打包bundle</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</div><div class="line">&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot;</div><div class="line">         xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</div><div class="line">         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;</div><div class="line">    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;</div><div class="line"></div><div class="line">    &lt;groupId&gt;org.hhb&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;osgi-provider&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;</div><div class="line">    &lt;packaging&gt;bundle&lt;/packaging&gt;</div><div class="line"></div><div class="line">    &lt;build&gt;</div><div class="line">        &lt;plugins&gt;</div><div class="line">            &lt;plugin&gt;</div><div class="line">                &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;</div><div class="line">                &lt;artifactId&gt;maven-bundle-plugin&lt;/artifactId&gt;</div><div class="line">                &lt;version&gt;2.4.0&lt;/version&gt;</div><div class="line">                &lt;extensions&gt;true&lt;/extensions&gt;</div><div class="line"></div><div class="line">                &lt;configuration&gt;</div><div class="line">                    &lt;instructions&gt;</div><div class="line">                        &lt;Bundle-SymbolicName&gt;$&#123;pom.groupId&#125;.$&#123;pom.artifactId&#125;&lt;/Bundle-SymbolicName&gt;</div><div class="line">                        &lt;Bundle-Vendor&gt;Apache Felix&lt;/Bundle-Vendor&gt;</div><div class="line">                        &lt;Bundle-Activator&gt;org.hhb.osgi.provider.HelloActivator&lt;/Bundle-Activator&gt;</div><div class="line">                    &lt;/instructions&gt;</div><div class="line">                &lt;/configuration&gt;</div><div class="line">            &lt;/plugin&gt;</div><div class="line">            &lt;plugin&gt;</div><div class="line">                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;</div><div class="line">                &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;</div><div class="line">                &lt;configuration&gt;</div><div class="line">                    &lt;source&gt;1.8&lt;/source&gt;</div><div class="line">                    &lt;target&gt;1.8&lt;/target&gt;</div><div class="line">                &lt;/configuration&gt;</div><div class="line">            &lt;/plugin&gt;</div><div class="line"></div><div class="line">        &lt;/plugins&gt;</div><div class="line">    &lt;/build&gt;</div><div class="line"></div><div class="line">    &lt;dependencies&gt;</div><div class="line">        &lt;dependency&gt;</div><div class="line">            &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;</div><div class="line">            &lt;artifactId&gt;org.osgi.core&lt;/artifactId&gt;</div><div class="line">            &lt;version&gt;1.4.0&lt;/version&gt;</div><div class="line">            &lt;scope&gt;provided&lt;/scope&gt;</div><div class="line">        &lt;/dependency&gt;</div><div class="line">    &lt;/dependencies&gt;</div><div class="line"></div><div class="line">&lt;/project&gt;</div></pre></td></tr></table></figure>
+<p>  这样编译打包后，就会在jar包下的META-INF文件夹下生成一个描述bundle信息的MANIFEST.MF文件。</p>
+</li>
+</ul>
+<h3 id="2-1-2-获取并使用服务"><a href="#2-1-2-获取并使用服务" class="headerlink" title="2.1.2 获取并使用服务"></a>2.1.2 获取并使用服务</h3><ul>
+<li><p>定义服务消费类HelloWorldConsumer</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">package org.hhb.osgi.consumer;</div><div class="line"></div><div class="line">import javax.swing.Timer;</div><div class="line"></div><div class="line">import java.awt.event.ActionEvent;</div><div class="line">import java.awt.event.ActionListener;</div><div class="line"></div><div class="line">import org.hhb.osgi.provider.api.HelloWorldService;</div><div class="line"></div><div class="line">public class HelloWorldConsumer implements ActionListener &#123;</div><div class="line">    private final HelloWorldService service;</div><div class="line">    private final Timer timer;</div><div class="line"></div><div class="line">    public HelloWorldConsumer(HelloWorldService service) &#123;</div><div class="line">        super();</div><div class="line"></div><div class="line">        this.service = service;</div><div class="line"></div><div class="line">        timer = new Timer(1000, this);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void startTimer()&#123;</div><div class="line">        timer.start();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void stopTimer() &#123;</div><div class="line">        timer.stop();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void actionPerformed(ActionEvent e) &#123;</div><div class="line">        service.hello();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>使用BundleContext获取服务并使用</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">package org.hhb.osgi.consumer;</div><div class="line"></div><div class="line">import org.osgi.framework.BundleActivator;</div><div class="line">import org.osgi.framework.BundleContext;</div><div class="line">import org.osgi.framework.ServiceReference;</div><div class="line"></div><div class="line">import org.hhb.osgi.provider.api.HelloWorldService;</div><div class="line"></div><div class="line">public class HelloWorldActivator implements BundleActivator &#123;</div><div class="line">    private HelloWorldConsumer consumer;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void start(BundleContext bundleContext) throws Exception &#123;</div><div class="line">        ServiceReference reference = bundleContext.getServiceReference(HelloWorldService.class.getName());</div><div class="line"></div><div class="line">        consumer = new HelloWorldConsumer((HelloWorldService) bundleContext.getService(reference));</div><div class="line">        consumer.startTimer();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void stop(BundleContext bundleContext) throws Exception &#123;</div><div class="line">        consumer.stopTimer();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>pom文件配置</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div></pre></td><td class="code"><pre><div class="line">&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</div><div class="line">  xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;</div><div class="line">  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;</div><div class="line"></div><div class="line">  &lt;groupId&gt;org.hhb&lt;/groupId&gt;</div><div class="line">  &lt;artifactId&gt;osgi-consumer&lt;/artifactId&gt;</div><div class="line">  &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;</div><div class="line">  &lt;packaging&gt;bundle&lt;/packaging&gt;</div><div class="line"></div><div class="line">  &lt;name&gt;osgi-consumer&lt;/name&gt;</div><div class="line">  &lt;url&gt;http://maven.apache.org&lt;/url&gt;</div><div class="line"></div><div class="line">  &lt;properties&gt;</div><div class="line">    &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;</div><div class="line">  &lt;/properties&gt;</div><div class="line"></div><div class="line">  &lt;dependencies&gt;</div><div class="line">    &lt;dependency&gt;</div><div class="line">      &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;</div><div class="line">      &lt;artifactId&gt;org.osgi.core&lt;/artifactId&gt;</div><div class="line">      &lt;version&gt;1.4.0&lt;/version&gt;</div><div class="line">      &lt;scope&gt;provided&lt;/scope&gt;</div><div class="line">    &lt;/dependency&gt;</div><div class="line"></div><div class="line">    &lt;dependency&gt;</div><div class="line">      &lt;groupId&gt;junit&lt;/groupId&gt;</div><div class="line">      &lt;artifactId&gt;junit&lt;/artifactId&gt;</div><div class="line">      &lt;version&gt;3.8.1&lt;/version&gt;</div><div class="line">      &lt;scope&gt;test&lt;/scope&gt;</div><div class="line">    &lt;/dependency&gt;</div><div class="line"></div><div class="line">    &lt;dependency&gt;</div><div class="line">      &lt;groupId&gt;org.hhb&lt;/groupId&gt;</div><div class="line">      &lt;artifactId&gt;osgi-provider&lt;/artifactId&gt;</div><div class="line">      &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;</div><div class="line">    &lt;/dependency&gt;</div><div class="line">  &lt;/dependencies&gt;</div><div class="line"></div><div class="line">  &lt;build&gt;</div><div class="line">    &lt;plugins&gt;</div><div class="line">      &lt;plugin&gt;</div><div class="line">        &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;</div><div class="line">        &lt;artifactId&gt;maven-bundle-plugin&lt;/artifactId&gt;</div><div class="line">        &lt;version&gt;2.4.0&lt;/version&gt;</div><div class="line">        &lt;extensions&gt;true&lt;/extensions&gt;</div><div class="line"></div><div class="line">        &lt;configuration&gt;</div><div class="line">          &lt;instructions&gt;</div><div class="line">            &lt;Bundle-SymbolicName&gt;$&#123;pom.groupId&#125;.$&#123;pom.artifactId&#125;&lt;/Bundle-SymbolicName&gt;</div><div class="line">            &lt;Bundle-Vendor&gt;Apache Felix&lt;/Bundle-Vendor&gt;</div><div class="line">            &lt;Bundle-Activator&gt;org.hhb.osgi.consumer.HelloWorldActivator&lt;/Bundle-Activator&gt;</div><div class="line">          &lt;/instructions&gt;</div><div class="line">        &lt;/configuration&gt;</div><div class="line">      &lt;/plugin&gt;</div><div class="line">      &lt;plugin&gt;</div><div class="line">        &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;</div><div class="line">        &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;</div><div class="line">        &lt;configuration&gt;</div><div class="line">          &lt;source&gt;1.8&lt;/source&gt;</div><div class="line">          &lt;target&gt;1.8&lt;/target&gt;</div><div class="line">        &lt;/configuration&gt;</div><div class="line">      &lt;/plugin&gt;</div><div class="line"></div><div class="line">    &lt;/plugins&gt;</div><div class="line">  &lt;/build&gt;</div><div class="line"></div><div class="line">&lt;/project&gt;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="2-1-3-在Felix中运行服务"><a href="#2-1-3-在Felix中运行服务" class="headerlink" title="2.1.3 在Felix中运行服务"></a>2.1.3 在Felix中运行服务</h3><ul>
+<li>下载<a href="http://felix.apache.org/downloads.cgi" target="_blank" rel="external">Felix Framework Distribution</a></li>
+<li><p>运行Felix</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$java -jar bin/felex.jar</div><div class="line">____________________________</div><div class="line">Welcome to Apache Felix Gogo</div><div class="line"></div><div class="line">g!</div></pre></td></tr></table></figure>
+</li>
+<li><p>运行bundle</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">g!                                                                                                                         </div><div class="line">g! install file:../osgi/osgi-provider-1.0-SNAPSHOT.jar                                                                              11:01:54 </div><div class="line">bundle ID: 8</div><div class="line">g! start 8                                                                                                                          11:02:02 </div><div class="line">g! install file:../osgi/osgi-consumer-1.0-SNAPSHOT.jar                                                                              11:02:08 </div><div class="line">bundle ID: 9</div><div class="line">g! start 9                                                                                                                          11:02:16 </div><div class="line">g! Hello World !                                                                                                                    11:02:19 </div><div class="line">Hello World !</div><div class="line">Hello World !</div><div class="line">Hello World !</div><div class="line">Hello World !</div><div class="line">stop 9</div></pre></td></tr></table></figure>
+<p>  其中file:../osgi/osgi-consumer-1.0-SNAPSHOT.jar表示bundle文件的路径。</p>
+</li>
+</ul>
+<h2 id="2-2-使用Export-Package提供Package给其它bundle使用"><a href="#2-2-使用Export-Package提供Package给其它bundle使用" class="headerlink" title="2.2 使用Export-Package提供Package给其它bundle使用"></a>2.2 使用Export-Package提供Package给其它bundle使用</h2><p>很多情况下在bundle使用第三方库，如Guava，Netty时，并不希望以服务的方式获取，而希望使用Import Package就可以获取对应的包。而默认情况下，不同bundle中的包是相互隔离的，这时就需要使用Export-Package导出bundle中的包给其它bundle使用。</p>
+<h3 id="2-2-1-产生bundle并Export-Package"><a href="#2-2-1-产生bundle并Export-Package" class="headerlink" title="2.2.1 产生bundle并Export Package"></a>2.2.1 产生bundle并Export Package</h3><ul>
+<li>定义接口HelloWorldService（同上）</li>
+</ul>
+<ul>
+<li>接口实现类HelloWorldServiceImpl（同上）</li>
+</ul>
+<ul>
+<li><p>配置pom</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</div><div class="line">&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot;</div><div class="line">         xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</div><div class="line">         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;</div><div class="line">    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;</div><div class="line"></div><div class="line">    &lt;groupId&gt;org.hhb&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;osgi-provider&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;</div><div class="line">    &lt;packaging&gt;bundle&lt;/packaging&gt;</div><div class="line"></div><div class="line">    &lt;build&gt;</div><div class="line">        &lt;plugins&gt;</div><div class="line">            &lt;plugin&gt;</div><div class="line">                &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;</div><div class="line">                &lt;artifactId&gt;maven-bundle-plugin&lt;/artifactId&gt;</div><div class="line">                &lt;version&gt;2.4.0&lt;/version&gt;</div><div class="line">                &lt;extensions&gt;true&lt;/extensions&gt;</div><div class="line"></div><div class="line">                &lt;configuration&gt;</div><div class="line">                    &lt;instructions&gt;</div><div class="line">                        &lt;Bundle-SymbolicName&gt;$&#123;pom.groupId&#125;.$&#123;pom.artifactId&#125;&lt;/Bundle-SymbolicName&gt;</div><div class="line">                        &lt;Bundle-Vendor&gt;Apache Felix&lt;/Bundle-Vendor&gt;</div><div class="line">                        &lt;Export-Package&gt;org.hhb.osgi.provider.api, org.hhb.osgi.provider.impl&lt;/Export-Package&gt;</div><div class="line">                    &lt;/instructions&gt;</div><div class="line">                &lt;/configuration&gt;</div><div class="line">            &lt;/plugin&gt;</div><div class="line">            &lt;plugin&gt;</div><div class="line">                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;</div><div class="line">                &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;</div><div class="line">                &lt;configuration&gt;</div><div class="line">                    &lt;source&gt;1.8&lt;/source&gt;</div><div class="line">                    &lt;target&gt;1.8&lt;/target&gt;</div><div class="line">                &lt;/configuration&gt;</div><div class="line">            &lt;/plugin&gt;</div><div class="line"></div><div class="line">        &lt;/plugins&gt;</div><div class="line">    &lt;/build&gt;</div><div class="line"></div><div class="line">    &lt;dependencies&gt;</div><div class="line">        &lt;dependency&gt;</div><div class="line">            &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;</div><div class="line">            &lt;artifactId&gt;org.osgi.core&lt;/artifactId&gt;</div><div class="line">            &lt;version&gt;1.4.0&lt;/version&gt;</div><div class="line">            &lt;scope&gt;provided&lt;/scope&gt;</div><div class="line">        &lt;/dependency&gt;</div><div class="line">    &lt;/dependencies&gt;</div><div class="line"></div><div class="line">&lt;/project&gt;</div></pre></td></tr></table></figure>
+<p>  需要注意的是，激活器（bundle-Activator）对一个bundle来说不是必需的，也就是说，bundle的start过程并处于Active状态并不需要bundle-Activator。只有当构建一个bundle，并需要与OSGi API进行交换时，或者需要执行自定义的初始化/销毁动作，激活器才是必须的。事实上，前面使用bundle-Activator主要是为了注册服务并实例化服务对象，这样其它bundle就可以直接使用该服务了。</p>
+</li>
+</ul>
+<h3 id="2-2-2-在另一bundle种使用外部包"><a href="#2-2-2-在另一bundle种使用外部包" class="headerlink" title="2.2.2 在另一bundle种使用外部包"></a>2.2.2 在另一bundle种使用外部包</h3><ul>
+<li><p>定义服务消费类HelloWorldConsumer（同上）</p>
+</li>
+<li><p>Import Package并使用</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">package org.hhb.osgi.consumer;</div><div class="line"></div><div class="line">import com.google.common.collect.Lists;</div><div class="line">import org.osgi.framework.BundleActivator;</div><div class="line">import org.osgi.framework.BundleContext;</div><div class="line">import org.hhb.osgi.provider.impl.HelloWorldServiceImpl;</div><div class="line"></div><div class="line">import java.util.List;</div><div class="line"></div><div class="line">public class HelloWorldActivator implements BundleActivator &#123;</div><div class="line">    private HelloWorldConsumer consumer;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void start(BundleContext bundleContext) throws Exception &#123;</div><div class="line">        //test for using third-party dependency package</div><div class="line">        List&lt;String&gt; strings = Lists.newArrayList(&quot;I&quot;, &quot;use&quot;, &quot;guava&quot;, &quot;here&quot;);</div><div class="line">        System.out.println(strings);</div><div class="line"></div><div class="line">        //test for using my customized dependency package</div><div class="line">        //ServiceReference reference = bundleContext.getServiceReference(HelloWorldService.class.getName());</div><div class="line">        consumer = new HelloWorldConsumer(new HelloWorldServiceImpl());</div><div class="line">        consumer.startTimer();</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void stop(BundleContext bundleContext) throws Exception &#123;</div><div class="line">        consumer.stopTimer();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>pom的配置（同上）</p>
+<p>  需要注意的是，maven-bundle-plugin会根据类中声明的import的包信息导入所有的Package并写入MANIFEST-MF文件的Import-Package字段中，若自己在pom中定义Import-Package信息，需要注意不要遗漏相关的Package。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">&lt;plugin&gt;</div><div class="line">    &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;maven-bundle-plugin&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;2.4.0&lt;/version&gt;</div><div class="line">    &lt;extensions&gt;true&lt;/extensions&gt;</div><div class="line"></div><div class="line">    &lt;configuration&gt;</div><div class="line">      &lt;instructions&gt;</div><div class="line">        &lt;Bundle-SymbolicName&gt;$&#123;pom.groupId&#125;.$&#123;pom.artifactId&#125;&lt;/Bundle-SymbolicName&gt;</div><div class="line">        &lt;Bundle-Vendor&gt;Apache Felix&lt;/Bundle-Vendor&gt;</div><div class="line">        &lt;Bundle-Activator&gt;org.hhb.osgi.consumer.HelloWorldActivator&lt;/Bundle-Activator&gt;</div><div class="line">        &lt;!--&lt;Import-Package&gt;com.google.common.collect,javax.swing,org.osgi.framework,</div><div class="line">        org.hhb.osgi.provider.api,org.hhb.osgi.provider.impl&lt;/Import-Package&gt;--&gt;</div><div class="line">      &lt;/instructions&gt;</div><div class="line">    &lt;/configuration&gt;</div><div class="line">&lt;/plugin&gt;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="2-2-3-在Felix中运行服务"><a href="#2-2-3-在Felix中运行服务" class="headerlink" title="2.2.3 在Felix中运行服务"></a>2.2.3 在Felix中运行服务</h3><p> 同上</p>
+<h3 id="2-2-4-bundle中使用外部包总结"><a href="#2-2-4-bundle中使用外部包总结" class="headerlink" title="2.2.4 bundle中使用外部包总结"></a>2.2.4 bundle中使用外部包总结</h3><p>在Java程序中，用到外部包中的类几乎是必然的事情，在OSGI和MAVEN环境下，引用外部包的方法总结如下：</p>
+<ol>
+<li><p>java.开头的包，是JDK提供了，代码中直接import。</p>
+</li>
+<li><p>org.osgi开头的（包括core、compendium等），是osgi规范提供的，已经包含在osgi框架（Felix）中，开发时需要导入，但是发布程序中不需要包含，由Felix提供，实现方法是添加scope为provided的maven依赖，如：</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;org.osgi.core&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;1.4.0&lt;/version&gt;</div><div class="line">    &lt;scope&gt;provided&lt;/scope&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure>
+</li>
+<li><p>第三方jar包，可能有多个bundle共享的，直接osgi化，然后作为独立bundle安装到Felix中,如Guava，部署时只要将这些包作为一个独立的bundle并启动，其他bundle就可以通过直接Import-Package的方式来引用这些包。之所以能够这么做是因为这个jar已经osgi化了，查看jar包中的META-INF/MENIFEST.MF文件，可以看到这些jar包Export的包信息。</p>
+</li>
+<li>第三方的jar包，不考虑多个bundle共享，只确保一个bundle的独立依赖，可以把这些依赖的jar嵌入到开发的bundle中发布。maven中加入这些jar包的dependency的依赖项就可以在开发时引用了，但是发布到Felix框架时，我们要把这些jar包一起提供才行，方法是把这些jar包嵌入到我们的bundle中，使用maven-bundle-plugin，增加instructions配置<embed-dependency>*;scope=compile|runtime</embed-dependency>，这样maven在打包是就可以自动把这些依赖的jar包嵌入。要注意这些依赖的scope和Embed-Dependency的表述方式的匹配，具体Embed-Dependency可能的写法请参见<a href="http://felix.apache.org/documentation/subprojects/apache-felix-maven-bundle-plugin-bnd.html" target="_blank" rel="external">maven-bundle-plugin</a>在线文档。</li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/OSGi/" rel="tag"># OSGi</a>
+          
+            <a href="/tags/Felix/" rel="tag"># Felix</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/06/深入理解Java：抽象类和接口/" rel="next" title="深入理解Java：抽象类和接口">
+                <i class="fa fa-chevron-left"></i> 深入理解Java：抽象类和接口
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/10/ONOS中的OpenFlow-Channel状态机解析/" rel="prev" title="ONOS中的OpenFlow Channel状态机解析">
+                ONOS中的OpenFlow Channel状态机解析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Dabai" />
+          <p class="site-author-name" itemprop="name">Dabai</p>
+          <p class="site-description motion-element" itemprop="description">写点可以沉淀下来的东西</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">29</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/baymaxhuang" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.facebook.com/huanghuibai" target="_blank" title="Facebook">
+                  
+                    <i class="fa fa-fw fa-facebook"></i>
+                  
+                  Facebook
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:baymaxhuang@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-OSGi的基本概念"><span class="nav-number">1.</span> <span class="nav-text">1. OSGi的基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-bundle"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 bundle</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-OSGi-Service"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 OSGi Service</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-OSGi框架"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 OSGi框架</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-基于OSGi框架（Felix）简单应用的实现"><span class="nav-number">2.</span> <span class="nav-text">2. 基于OSGi框架（Felix）简单应用的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-使用BundleContext注册和获取OSGi-Service"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 使用BundleContext注册和获取OSGi Service</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-1-定义服务并注册"><span class="nav-number">2.1.1.</span> <span class="nav-text">2.1.1 定义服务并注册</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-2-获取并使用服务"><span class="nav-number">2.1.2.</span> <span class="nav-text">2.1.2 获取并使用服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-3-在Felix中运行服务"><span class="nav-number">2.1.3.</span> <span class="nav-text">2.1.3 在Felix中运行服务</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-使用Export-Package提供Package给其它bundle使用"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 使用Export-Package提供Package给其它bundle使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-1-产生bundle并Export-Package"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.2.1 产生bundle并Export Package</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-2-在另一bundle种使用外部包"><span class="nav-number">2.2.2.</span> <span class="nav-text">2.2.2 在另一bundle种使用外部包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-3-在Felix中运行服务"><span class="nav-number">2.2.3.</span> <span class="nav-text">2.2.3 在Felix中运行服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-4-bundle中使用外部包总结"><span class="nav-number">2.2.4.</span> <span class="nav-text">2.2.4 bundle中使用外部包总结</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Dabai</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'dabais-blog';
+      var disqus_identifier = '2016/12/08/OSGi简介与基于OSGi框架（Felix）的简单应用的实现/';
+
+      var disqus_title = "OSGi简介与基于OSGi框架（Felix）的简单应用实现";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
