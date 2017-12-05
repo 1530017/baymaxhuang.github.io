@@ -93,7 +93,7 @@
 <meta property="og:site_name" content="Dabai的个人博客">
 <meta property="og:description" content="Atomix是一个基于Raft协议的分布式协同框架，是ONOS分布式集群和分布式原语实现的基础，Atomix提供集群的管理，通信，领导选择，Key-Value存储，以及数据分片等功能。从Atomix 2.0开始，raft协议的实现Copycat已经集成到Atomix了，下面将结合Atomix 2.0对Atomix源码进行分析，从而深入理解Raft协议的原理和Atomix的工作机制。（更新中~）">
 <meta property="og:image" content="http://oj37kd49l.bkt.clouddn.com/RaftClient-3.png">
-<meta property="og:updated_time" content="2017-11-22T01:27:07.550Z">
+<meta property="og:updated_time" content="2017-12-05T01:47:33.882Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Atomix源码分析：Raft Client的实现和与Server的交互">
 <meta name="twitter:description" content="Atomix是一个基于Raft协议的分布式协同框架，是ONOS分布式集群和分布式原语实现的基础，Atomix提供集群的管理，通信，领导选择，Key-Value存储，以及数据分片等功能。从Atomix 2.0开始，raft协议的实现Copycat已经集成到Atomix了，下面将结合Atomix 2.0对Atomix源码进行分析，从而深入理解Raft协议的原理和Atomix的工作机制。（更新中~）">
@@ -430,7 +430,7 @@
 <p> 由上面的分析可知，Atomix里面消息的处理流程的核心思想就是注册和回调，同时使用<code>CompletableFuture</code>作为异步计算的结果，提高程序的运行效率。</p>
 </li>
 </ol>
-<h2 id="2-2-Client对状态机的操作"><a href="#2-2-Client对状态机的操作" class="headerlink" title="2.2 Client对状态机的操作"></a>2.2 Client对状态机的操作</h2><p>Client对状态机的操作包括写和读，分别用Command和Query来表示。Command操作会是状态机发生转移，需要通过leader写log，Query操作可以根据一致性等级进行操作，若需实现线性一致性，需要leader的处理。</p>
+<h2 id="2-2-Client对状态机的操作"><a href="#2-2-Client对状态机的操作" class="headerlink" title="2.2 Client对状态机的操作"></a>2.2 Client对状态机的操作</h2><p>Client对状态机的操作包括写和读，分别用Command和Query来表示。Command操作会使状态机发生转移，需要通过leader写log并经过多数派的提交确认；Query操作可以根据一致性等级进行操作，若需实现线性一致性，需要leader的处理。</p>
 <h3 id="2-2-1-Command操作"><a href="#2-2-1-Command操作" class="headerlink" title="2.2.1 Command操作"></a>2.2.1 Command操作</h3><p>参考：</p>
 <ul>
 <li><a href="http://atomix.io" target="_blank" rel="external">Atomix</a></li>
