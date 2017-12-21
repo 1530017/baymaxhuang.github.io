@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-12-05T01:47:33.882Z</updated>
+  <updated>2017-12-05T01:47:59.300Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2017/11/13/Atomix%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%9ARaft%20Client%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%92%8C%E4%B8%8EServer%E7%9A%84%E4%BA%A4%E4%BA%92/"/>
     <id>http://yoursite.com/2017/11/13/Atomix源码分析：Raft Client的实现和与Server的交互/</id>
     <published>2017-11-13T13:16:50.000Z</published>
-    <updated>2017-12-05T01:47:33.882Z</updated>
+    <updated>2017-12-05T01:47:59.300Z</updated>
     
     <content type="html"><![CDATA[<p><a href="https://github.com/atomix/atomix" target="_blank" rel="external">Atomix</a>是一个基于Raft协议的分布式协同框架，是ONOS分布式集群和分布式原语实现的基础，Atomix提供集群的管理，通信，领导选择，Key-Value存储，以及数据分片等功能。从Atomix 2.0开始，raft协议的实现<a href="https://github.com/atomix/copycat" target="_blank" rel="external">Copycat</a>已经集成到Atomix了，下面将结合Atomix 2.0对Atomix源码进行分析，从而深入理解Raft协议的原理和Atomix的工作机制。（更新中~）</p>
 <a id="more"></a>
@@ -228,7 +228,7 @@
     <link href="http://yoursite.com/2017/02/15/ONOS-cluster%E5%88%86%E5%B8%83%E5%BC%8F%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E5%92%8C%E4%B8%9C%E8%A5%BF%E5%90%91%E9%80%9A%E4%BF%A1/"/>
     <id>http://yoursite.com/2017/02/15/ONOS-cluster分布式数据存储和东西向通信/</id>
     <published>2017-02-15T07:38:57.000Z</published>
-    <updated>2017-11-18T08:29:41.114Z</updated>
+    <updated>2017-12-21T12:49:39.752Z</updated>
     
     <content type="html"><![CDATA[<p>ONOS是一个分布式的控制器，为了提高数据的读写效率，采用自实现的基于In-Memory的Key-Value数据存储系统。针对实际的需要，不同的数据模型采用不同的数据一致性方法，即强一致性（strong consistency）和最终一致性（eventually consistency）。ONOS使用raft协议实现强一致性，使用anti-entropy（gossip）协议实现最终一致性。</p>
 <a id="more"></a>
@@ -251,7 +251,7 @@
 <li>最终一致性(eventual consistency)：多个进程或节点在相同的时刻可能对相同数据有不同的访问值，但经过一定时间后数据的更新会达成一致，ONOS使用事件乐观异步复制和anti-entropy(gossip)协议实现最终一致性。下面是最终一致性的实现方法：</li>
 </ul>
 <p><img src="http://oj37kd49l.bkt.clouddn.com/eventually%20consistency.png" alt=""></p>
-<p>何时使用强一致性和若一致性，这取决于系统对不同模型的一致性需求，同时要考虑实际一致性的可操作性。例如每个控制器都要有网络的全局拓扑信息，在很多情况下，拓扑信息是不变的，拓扑信息的变化是由于物理网络的变化，控制器只是拓扑信息的<strong>观察者</strong>，这在实现强一致性过程中需要很多代价，因此对于物理拓扑，ONOS使用最终一致性。事实上，传统的OSPF协议也是使用弱一致性快速收敛的。若控制器是数据变化的<strong>生产者</strong>，往往采用强一致性，如Intent下发，控制器到交换机的主从关系的维护。下面是ONOS中使用的一致性模型分类：</p>
+<p>何时使用强一致性和弱一致性，这取决于系统对不同模型的一致性需求，同时要考虑实际一致性的可操作性。例如每个控制器都要有网络的全局拓扑信息，在很多情况下，拓扑信息是不变的，拓扑信息的变化是由于物理网络的变化，控制器只是拓扑信息的<strong>观察者</strong>，这在实现强一致性过程中需要很多代价，因此对于物理拓扑，ONOS使用最终一致性。事实上，传统的OSPF协议也是使用弱一致性快速收敛的。若控制器是数据变化的<strong>生产者</strong>，往往采用强一致性，如Intent下发，控制器到交换机的主从关系的维护。下面是ONOS中使用的一致性模型分类：</p>
 <table>
 <thead>
 <tr>
@@ -274,7 +274,7 @@
 </tr>
 </tbody>
 </table>
-<p>为了隐藏数据存储的复杂性，ONOS提供了一些分布式原语（distributed primitive）来实现数据的强一致性和最终一致性存储，使用<code>StorageService</code>服务可以创建这些原语数据结构。如<code>EventuallyConsistentMap&lt;K, V&gt;</code>用来存贮一个最终一致性map，<code>EventuallyConsistentMap</code>直接在<strong>本地</strong>进行数据读写操作，有节点的map值发生更新时，ONOS会广播更新时间和更新的值，其它的节点会通过比较时间戳来更新map的值。另外，当有新节点加入或有节点的数据突然丢失时，ONOS使用anti-entropy(gossip)协议来确保数据的最终一致性。而<code>ConsistentMap&lt;K, V&gt;</code>是一个实现了强一致性的map，该map最终是通过Atomix框架的raft协议实现的。但需要注意的是，强一致性也有不同的等级，如线性一致性（linearizable consistency）, 可串化一致性（serializable consistency）, 顺序一致性（sequential consistency）。<code>ConsistentMap</code>实现的一致性模型是线性一致性地写和顺序一致性地读，也就是说，一个节点执行了写操作，那么这个写操作会立即在这个节点完成，即这个写操作对当前节点后面的读操作都是可见的（linearizable consistency）。ConsistentMap并不保证这个写操作对其它节点也立即可见，但其它节点会以相同的顺序读取到当前节点的更新（sequential consistency）。</p>
+<p>为了隐藏数据存储的复杂性，ONOS提供了一些分布式原语（distributed primitive）来实现数据的强一致性和最终一致性存储，使用<code>StorageService</code>服务可以创建这些原语数据结构。如<code>EventuallyConsistentMap&lt;K, V&gt;</code>用来存储一个最终一致性map，<code>EventuallyConsistentMap</code>直接在<strong>本地</strong>进行数据读写操作，有节点的map值发生更新时，ONOS会广播更新时间和更新的值，其它的节点会通过比较时间戳来更新map的值。另外，当有新节点加入或有节点的数据突然丢失时，ONOS使用anti-entropy(gossip)协议来确保数据的最终一致性。而<code>ConsistentMap&lt;K, V&gt;</code>是一个实现了强一致性的map，该map最终是通过Atomix框架的raft协议实现的。但需要注意的是，强一致性也有不同的等级，如线性一致性（linearizable consistency）, 可串化一致性（serializable consistency）, 顺序一致性（sequential consistency）。<code>ConsistentMap</code>实现的一致性模型是线性一致性地写和顺序一致性地读，也就是说，一个节点执行了写操作，那么这个写操作会立即在这个节点完成，即这个写操作对当前节点后面的读操作都是可见的（linearizable consistency）。ConsistentMap并不保证这个写操作对其它节点也立即可见，但其它节点会以相同的顺序读取到当前节点的更新（sequential consistency）。</p>
 <p>需要注意的是，实现强一致性的代价是昂贵的，为了提高数据的读取效率，可以使用本地缓存<code>ConsistentMap</code>的方式来提高部分读操作（如get，containsKey等操作）的读取效率，相关代码在<code>CachingAsyncConsistentMap</code>中实现。构建<code>ConsistentMap</code>时可以使用<code>withRelaxedReadConsistency</code>方法设置使用本地缓存的方式读取map。</p>
 <p>参考：</p>
 <ul>
