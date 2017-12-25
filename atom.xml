@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-12-05T01:47:59.300Z</updated>
+  <updated>2017-12-25T09:14:45.322Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,50 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>ONOS中基于gRPC应用的实现</title>
+    <link href="http://yoursite.com/2017/12/25/ONOS%E4%B8%AD%E5%9F%BA%E4%BA%8EgRPC%E5%BA%94%E7%94%A8%E7%9A%84%E5%AE%9E%E7%8E%B0/"/>
+    <id>http://yoursite.com/2017/12/25/ONOS中基于gRPC应用的实现/</id>
+    <published>2017-12-25T03:15:04.000Z</published>
+    <updated>2017-12-25T09:14:45.322Z</updated>
+    
+    <content type="html"><![CDATA[<p>gRPC是谷歌开源的一个高性能RPC框架，支持多种语言。由于ONOS是运行在基于OSGi框架的karaf容器中，而当前官方提供的gRPC包没有OSGi化，因此若要在ONOS中实现基于gRPC的应用，需要考虑gRPC依赖的OSGi化问题。</p>
+<a id="more"></a>
+<h1 id="1-gRPC依赖的OSGi化"><a href="#1-gRPC依赖的OSGi化" class="headerlink" title="1. gRPC依赖的OSGi化"></a>1. gRPC依赖的OSGi化</h1><p>默认情况下，OSGi框架下各个bundle是相互隔离的，不同bundle中的包不能直接引用，而依赖包的OSGi化，就是使该依赖以bundle的方式注册到OSGi框架里面并Export一些特定的package，当该bundle处于激活状态时，其它的bundle就能直接引用该bundle中的类，实现bundle的复用。</p>
+<p>由于ONOS中使用了gRPC服务，因此ONOS也对gRPC包做了OSGi化处理，若使用Maven编译，gRPC的OSGi化可以参考<code>onos/incubator/grpc/features.xml</code>，若使用buck编译，gRPC的OSGi化可以参考<code>onos/incubator/grpc-dependencies/BUCK</code>。</p>
+<p>默认情况下，ONOS没有激活gRPC依赖对应的bundle，因此若应用中需要使用gRPC服务，可以先激活ONOS中的应用：<code>org.onosproject.protocols.grpc</code>，这样gRPC依赖对应的bundle也将处于激活状态，然后你在自己的应用中就不用考虑gRPC依赖的OSGi化问题了。</p>
+<p><em>PS：也可以考虑在maven中以Embed方式将gRPC依赖嵌入到该应用程序中，但这样不能实现gRPC依赖在多个bundle中复用。</em></p>
+<h1 id="2-实现基于gRPC的应用"><a href="#2-实现基于gRPC的应用" class="headerlink" title="2. 实现基于gRPC的应用"></a>2. 实现基于gRPC的应用</h1><p>由于官方文档关于Hello World介绍已经很清楚了，本文还是以实现Hello World为例，介绍实现gRPC应用需要注意的问题。</p>
+<ol>
+<li><p>导入gRPC依赖和相关插件</p>
+<p> 首先导入的gRPC依赖要和ONOS中的gRPC bundle的版本相同，另外，使用<code>build-helper-maven-plugin</code>插件添加<code>${project.build.directory}/generated-sources/protobuf/</code>目录下由protobuf文件生成的源码，同时开启maven-src-plugin插件的类扫描功能，使得该插件生成scr描述信息时能够找到<code>${project.build.directory}/generated-sources/protobuf/</code>中生成的类。</p>
+</li>
+<li><p>构建gRPC Server<br> 官方使用<code>ServerBuilder</code>构建<code>HelloWorldServer</code>，这在Karaf容器中会产生如下的异常：</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Caused by: io.grpc.ManagedChannelProvider$ProviderNotFoundException: No functional channel service provider found. Try adding a dependency on the grpc-okhttp or grpc-netty artifact</div><div class="line">......</div></pre></td></tr></table></figure>
+<p> 这是由于OSGi框架下不同的bundle使用的类加载器是不同的，gRPC中的这部分代码没有考虑OSGi中的类加载器的特殊性问题，解决办法是使用<code>NettyServerBuilder</code>构建一个Server：</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">        server = NettyServerBuilder.forPort(port)</div><div class="line">                .addService(<span class="keyword">new</span> GreeterImpl())</div><div class="line">                .build()</div><div class="line">                .start();</div><div class="line"></div><div class="line">        log.info(<span class="string">"Server started, listening on "</span> + port);</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>详细代码参考：<a href="https://github.com/baymaxhuang/onos-app-grpc-demo" target="_blank" rel="external">gRPC demo</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;gRPC是谷歌开源的一个高性能RPC框架，支持多种语言。由于ONOS是运行在基于OSGi框架的karaf容器中，而当前官方提供的gRPC包没有OSGi化，因此若要在ONOS中实现基于gRPC的应用，需要考虑gRPC依赖的OSGi化问题。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="ONOS" scheme="http://yoursite.com/categories/ONOS/"/>
+    
+    
+      <category term="ONOS" scheme="http://yoursite.com/tags/ONOS/"/>
+    
+      <category term="gRPC" scheme="http://yoursite.com/tags/gRPC/"/>
+    
+      <category term="OSGi" scheme="http://yoursite.com/tags/OSGi/"/>
+    
+  </entry>
   
   <entry>
     <title>Atomix源码分析：Raft Client的实现和与Server的交互</title>
