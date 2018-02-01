@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-01-28T03:02:18.936Z</updated>
+  <updated>2018-01-31T14:30:49.387Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,37 +16,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>ONOS中ISSU特性的实现和分析</title>
-    <link href="http://yoursite.com/2018/01/26/ONOS%E4%B8%ADISSU%E7%89%B9%E6%80%A7%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%92%8C%E5%88%86%E6%9E%90/"/>
-    <id>http://yoursite.com/2018/01/26/ONOS中ISSU特性的实现和分析/</id>
-    <published>2018-01-26T12:15:40.000Z</published>
-    <updated>2018-01-28T03:02:18.936Z</updated>
-    
-    <content type="html"><![CDATA[<a id="more"></a>
-<h1 id="1-gRPC依赖的OSGi化"><a href="#1-gRPC依赖的OSGi化" class="headerlink" title="1. gRPC依赖的OSGi化"></a>1. gRPC依赖的OSGi化</h1>]]></content>
-    
-    <summary type="html">
-    
-      &lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
-&lt;h1 id=&quot;1-gRPC依赖的OSGi化&quot;&gt;&lt;a href=&quot;#1-gRPC依赖的OSGi化&quot; class=&quot;headerlink&quot; title=&quot;1. gRPC依赖的OSGi化&quot;&gt;&lt;/a&gt;1. gRPC依赖的OSGi化&lt;/h1&gt;
-    
-    </summary>
-    
-      <category term="ONOS" scheme="http://yoursite.com/categories/ONOS/"/>
-    
-    
-      <category term="ONOS" scheme="http://yoursite.com/tags/ONOS/"/>
-    
-      <category term="ISSU" scheme="http://yoursite.com/tags/ISSU/"/>
-    
-  </entry>
-  
-  <entry>
     <title>ONOS中基于gRPC应用的实现</title>
     <link href="http://yoursite.com/2017/12/25/ONOS%E4%B8%AD%E5%9F%BA%E4%BA%8EgRPC%E5%BA%94%E7%94%A8%E7%9A%84%E5%AE%9E%E7%8E%B0/"/>
     <id>http://yoursite.com/2017/12/25/ONOS中基于gRPC应用的实现/</id>
     <published>2017-12-25T03:15:04.000Z</published>
-    <updated>2018-01-31T13:29:01.546Z</updated>
+    <updated>2018-01-31T14:30:49.387Z</updated>
     
     <content type="html"><![CDATA[<p>gRPC是谷歌开源的一个高性能RPC框架，支持多种语言。由于ONOS是运行在基于OSGi框架的karaf容器中，而当前官方提供的gRPC包没有OSGi化，因此若要在ONOS中实现基于gRPC的应用，需要考虑gRPC依赖的OSGi化问题。</p>
 <a id="more"></a>
