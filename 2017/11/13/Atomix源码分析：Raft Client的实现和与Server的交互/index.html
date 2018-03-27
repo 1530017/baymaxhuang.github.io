@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion" lang="zh-Hans">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -92,12 +92,10 @@
 <meta property="og:url" content="http://yoursite.com/2017/11/13/Atomix源码分析：Raft Client的实现和与Server的交互/index.html">
 <meta property="og:site_name" content="Dabai的个人博客">
 <meta property="og:description" content="Atomix是一个基于Raft协议的分布式协同框架，是ONOS分布式集群和分布式原语实现的基础，Atomix提供集群的管理，通信，领导选择，Key-Value存储，以及数据分片等功能。从Atomix 2.0开始，raft协议的实现Copycat已经集成到Atomix了，下面将结合Atomix 2.0对Atomix源码进行分析，从而深入理解Raft协议的原理和Atomix的工作机制。（更新中~）">
-<meta property="og:image" content="http://oj37kd49l.bkt.clouddn.com/RaftClient-3.png">
-<meta property="og:updated_time" content="2017-12-05T01:47:59.300Z">
+<meta property="og:updated_time" content="2018-03-27T09:37:11.399Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Atomix源码分析：Raft Client的实现和与Server的交互">
 <meta name="twitter:description" content="Atomix是一个基于Raft协议的分布式协同框架，是ONOS分布式集群和分布式原语实现的基础，Atomix提供集群的管理，通信，领导选择，Key-Value存储，以及数据分片等功能。从Atomix 2.0开始，raft协议的实现Copycat已经集成到Atomix了，下面将结合Atomix 2.0对Atomix源码进行分析，从而深入理解Raft协议的原理和Atomix的工作机制。（更新中~）">
-<meta name="twitter:image" content="http://oj37kd49l.bkt.clouddn.com/RaftClient-3.png">
 
 
 
@@ -131,7 +129,7 @@
 
 
 
-  <title> Atomix源码分析：Raft Client的实现和与Server的交互 | Dabai的个人博客 </title>
+  <title> Atomix源码分析：Raft Client的实现和与Server的交互 | Dabai的个人博客 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -152,7 +150,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -397,9 +395,7 @@
 <p>Atomix里的Raft实现主要包括raft client和raft server，raft server就是Raft里面实现数据一致性同步的节点，Raft里面的Leader，Candidate，Follower身份的确立和转换都是围绕raft server展开的,raft client通过raft session 与Raft状态机集群交互，从而完成状态机的查询，修改等操作。</p>
 <p><em>注：Atomix 2.x在tests模块下新增了一个Raft测试文件<a href="https://github.com/atomix/atomix/blob/master/tests/src/main/java/io/atomix/protocols/raft/RaftFuzzTest.java" target="_blank" rel="external">RaftFuzzTest.java</a>。这个文件包含了完整的raft client和raft server的建立过程，阅读这个文件的源码对了解和学习Atomix很有帮助！</em></p>
 <h1 id="1-Raft-client的实现"><a href="#1-Raft-client的实现" class="headerlink" title="1. Raft client的实现"></a>1. Raft client的实现</h1><p>Raft client的实现主要包括RaftClient，RaftProxy，RaftSession，包括Client与Server连接的建立，会话的管理，以及提交操作等功能。</p>
-<h2 id="1-1-创建RaftClient"><a href="#1-1-创建RaftClient" class="headerlink" title="1.1 创建RaftClient"></a>1.1 创建RaftClient</h2><p><code>RaftClient</code>提供了与Raft集群建立连接的接口，<code>DefaultRaftClient</code>是<code>RaftClient</code>的实现类，可以使用构造器创建<code>RaftClient</code>，<code>DefaultRaftClient</code>的类图如下所示：</p>
-<p><img src="http://oj37kd49l.bkt.clouddn.com/RaftClient-3.png" alt="image"></p>
-<p>在Atomix工程里面的<code>RaftFuzzTest</code>里有创建RaftClient的例子：</p>
+<h2 id="1-1-创建RaftClient"><a href="#1-1-创建RaftClient" class="headerlink" title="1.1 创建RaftClient"></a>1.1 创建RaftClient</h2><p><code>RaftClient</code>提供了与Raft集群建立连接的接口，<code>DefaultRaftClient</code>是<code>RaftClient</code>的实现类，可以使用构造器创建<code>RaftClient</code>，在Atomix工程里面的<code>RaftFuzzTest</code>里有创建RaftClient的例子：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">RaftClient client = RaftClient.newBuilder()</div><div class="line">        .withMemberId(memberId) <span class="comment">//1</span></div><div class="line">        .withProtocol(protocol) <span class="comment">//2</span></div><div class="line">        .build();</div><div class="line">        </div><div class="line">client.connect(members.stream().map(RaftMember::memberId).collect(Collectors.toList())).join();</div></pre></td></tr></table></figure>
 <p>其中，方法1设置该RaftClient的ID，一般用本机的IP地址表示，而方法2设置client与server的通信协议，该协议对象需要实现<code>RaftClientProtocol</code>接口。</p>
 <p>创建好RaftClient后，使用RaftClient.connect与Raft cluster建立连接:</p>
@@ -418,7 +414,11 @@
 <p>在使用<code>RaftProxy.Builder</code>构造<code>RaftProxy</code>时可以设置该session的timeout，如果没有设定，timeout默认为0，那么Leader也将通过request-response返回一个timeout，这个timeout在<code>RaftContext</code>类中被默认设置为5000ms。</p>
 <p>另外<code>scheduleKeepAlive(long timeout, long delta)</code>方法中的<code>delta</code>参数表示从发送一个keep-alive请求到接收到该请求响应的时间间隔，keep-alive循环调度的方法实现如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"> <span class="comment">/**</span></div><div class="line">* Schedules a keep-alive request.</div><div class="line">*/</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">scheduleKeepAlive</span><span class="params">(<span class="keyword">long</span> timeout, <span class="keyword">long</span> delta)</span> </span>&#123;</div><div class="line">ScheduledFuture&lt;?&gt; keepAliveFuture = keepAliveFutures.remove(timeout);</div><div class="line"><span class="keyword">if</span> (keepAliveFuture != <span class="keyword">null</span>) &#123;</div><div class="line">  keepAliveFuture.cancel(<span class="keyword">false</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Schedule the keep alive for 3/4 the timeout minus the delta from the last keep-alive request.</span></div><div class="line">keepAliveFutures.put(timeout, threadPoolExecutor.schedule(() -&gt; &#123;</div><div class="line">  <span class="keyword">if</span> (open.get()) &#123;</div><div class="line">    keepAliveSessions(timeout);</div><div class="line">  &#125;</div><div class="line">&#125;, Math.max(Math.max((<span class="keyword">long</span>)(timeout * .<span class="number">75</span>) - delta, timeout - <span class="number">2500</span> - delta), <span class="number">0</span>), TimeUnit.MILLISECONDS));</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>上面的delta表示从发送keep-alive请求到获得该请求响应的时间间隔，一般该时间很短（2~4ms），因此若timeout设置成6000ms，那么keep-alive消息的发送间隔为4500ms左右。</p>
-<h1 id="2-Raft-client和raft-server的交互"><a href="#2-Raft-client和raft-server的交互" class="headerlink" title="2. Raft client和raft server的交互"></a>2. Raft client和raft server的交互</h1><h2 id="2-1-Raft-client和raft-server间消息的发送和回传"><a href="#2-1-Raft-client和raft-server间消息的发送和回传" class="headerlink" title="2.1 Raft client和raft server间消息的发送和回传"></a>2.1 Raft client和raft server间消息的发送和回传</h2><p>由于Atomix中使用了很多函数式编程以及回调处理，很多的代码调动关系不是很直观，下面将以<code>RaftFuzzTest</code>的实现为例介绍Keep-Alive消息的发送和处理流程。</p>
+<h2 id="1-4-Raft状态机保存并更新会话信息"><a href="#1-4-Raft状态机保存并更新会话信息" class="headerlink" title="1.4 Raft状态机保存并更新会话信息"></a>1.4 Raft状态机保存并更新会话信息</h2><p>Raft Client与Raft Server的会话信息保存在Raft状态机中，也是就是说各个节点保存有与整个Raft cluster建立的所有的会话信息，并且Raft状态机会根据<code>KeepAliveRequest</code>和<code>KeepAliveResponse</code>消息来不断更新状态机，从而判断各个会话是否存活。</p>
+<p>Raft状态机更新通过类<code>RaftServiceManager</code>实现，该类里面的<code>applyKeepAlive</code>方法就是根据<code>KeepAliveRequest</code>请求来更新Raft状态机。通过这部分代码发现，Raft状态机总是以<code>KeepAliveEntry</code>的时间戳来更新当前会话的最新时间，而<code>KeepAliveEntry</code>是由Leader产生的，因此即使各个节点的物理时间不同步，但各个节点会话的保存的所有会话的更新时间都是一样的。由于更新Raft状态机是通过写日志的方式进行的，Atomix处理<code>KeepAliveRequest</code>请求比较消耗系统资源。</p>
+<p>另外需要注意的是，若Leader节点发生失效后选举产生了新的Leader节点，Raft状态机会重置各个会话的Timeout计时器，从而避免选举时间过长导致判定Raft会话失效。这部分代码也在<code>RaftServiceManager</code>类里面的<code>applyInitialize</code>方法中实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">* Applies an initialize entry.</div><div class="line">* &lt;p&gt;</div><div class="line">* Initialize entries are used only at the beginning of a new leader's term to force the commitment of entries from</div><div class="line">* prior terms, therefore no logic needs to take place.</div><div class="line">*/</div><div class="line"><span class="function"><span class="keyword">private</span> CompletableFuture&lt;Void&gt; <span class="title">applyInitialize</span><span class="params">(Indexed&lt;InitializeEntry&gt; entry)</span> </span>&#123;</div><div class="line"><span class="keyword">for</span> (DefaultServiceContext service : services.values()) &#123;</div><div class="line">    service.keepAliveSessions(entry.index(), entry.entry().timestamp());</div><div class="line">&#125;</div><div class="line"><span class="keyword">return</span> CompletableFuture.completedFuture(<span class="keyword">null</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="2-Raft-client和raft-server的交互"><a href="#2-Raft-client和raft-server的交互" class="headerlink" title="2. Raft client和raft server的交互"></a>2. Raft client和raft server的交互</h1><h2 id="2-1-Raft-client和raft-server间消息的发送和回传"><a href="#2-1-Raft-client和raft-server间消息的发送和回传" class="headerlink" title="2.1 Raft client和raft server间消息的发送和回传"></a>2.1 Raft client和raft server间消息的发送和回传</h2><p>由于Atomix中使用了很多函数式编程以及回调处理，很多的代码调用关系不是很直观，下面将以<code>RaftFuzzTest</code>的实现为例介绍Keep-Alive消息的发送和处理流程。</p>
 <ol>
 <li><p>首先需要了解的是<code>RaftFuzzTest</code>中使用的<code>RaftClientProtocol</code>和<code>RaftServerProtocol</code>都是基于<code>MessagingService</code>消息处理接口实现的。该消息处理接口会区分每一种消息的类型，同时也需要给不同的消息类型注册不同的处理方法，当收到一种特定类型的消息时，就会回调对应的处理方法。</p>
 </li>
@@ -568,7 +568,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">15</span>
+              <span class="site-state-item-count">16</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -585,7 +585,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-count">32</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -656,7 +656,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-Raft-client的实现"><span class="nav-number">1.</span> <span class="nav-text">1. Raft client的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-创建RaftClient"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 创建RaftClient</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-创建RaftProxy"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 创建RaftProxy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-创建会话连接"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 创建会话连接</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Raft-client和raft-server的交互"><span class="nav-number">2.</span> <span class="nav-text">2. Raft client和raft server的交互</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-Raft-client和raft-server间消息的发送和回传"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 Raft client和raft server间消息的发送和回传</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-Client对状态机的操作"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 Client对状态机的操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-1-Command操作"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.2.1 Command操作</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-Raft-client的实现"><span class="nav-number">1.</span> <span class="nav-text">1. Raft client的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-创建RaftClient"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 创建RaftClient</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-创建RaftProxy"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 创建RaftProxy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-创建会话连接"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 创建会话连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-Raft状态机保存并更新会话信息"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 Raft状态机保存并更新会话信息</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Raft-client和raft-server的交互"><span class="nav-number">2.</span> <span class="nav-text">2. Raft client和raft server的交互</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-Raft-client和raft-server间消息的发送和回传"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 Raft client和raft server间消息的发送和回传</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-Client对状态机的操作"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 Client对状态机的操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-1-Command操作"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.2.1 Command操作</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
@@ -928,6 +928,28 @@
 
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
 
   
 
@@ -1034,7 +1056,7 @@
         showTime(Counter);
       }
     });
-  </script>
+  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
 
 

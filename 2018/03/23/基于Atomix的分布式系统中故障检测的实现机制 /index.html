@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Atomix,分布式系统,故障检测,Failure detector," />
 
 
 
@@ -86,15 +86,18 @@
 
 
 
-<meta name="description" content="写点可以沉淀下来的东西">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Dabai的个人博客">
-<meta property="og:url" content="http://yoursite.com/tags/idea/index.html">
+<meta name="description" content="Atomix是一个基于Raft协议的分布式协同框架，提供了集群管理，分布式存储等功能。其中，集群管理的一个基本功能就是集群的故障检测，也就是failure detector。下面将结合Atomix源码，分析基于Atomix的failure detector的实现机制。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于Atomix的分布式系统中故障检测的实现机制">
+<meta property="og:url" content="http://yoursite.com/2018/03/23/基于Atomix的分布式系统中故障检测的实现机制 /index.html">
 <meta property="og:site_name" content="Dabai的个人博客">
-<meta property="og:description" content="写点可以沉淀下来的东西">
+<meta property="og:description" content="Atomix是一个基于Raft协议的分布式协同框架，提供了集群管理，分布式存储等功能。其中，集群管理的一个基本功能就是集群的故障检测，也就是failure detector。下面将结合Atomix源码，分析基于Atomix的failure detector的实现机制。">
+<meta property="og:image" content="http://oj37kd49l.bkt.clouddn.com/atomix-failure-detector.jpg">
+<meta property="og:updated_time" content="2018-03-27T09:37:14.415Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Dabai的个人博客">
-<meta name="twitter:description" content="写点可以沉淀下来的东西">
+<meta name="twitter:title" content="基于Atomix的分布式系统中故障检测的实现机制">
+<meta name="twitter:description" content="Atomix是一个基于Raft协议的分布式协同框架，提供了集群管理，分布式存储等功能。其中，集群管理的一个基本功能就是集群的故障检测，也就是failure detector。下面将结合Atomix源码，分析基于Atomix的failure detector的实现机制。">
+<meta name="twitter:image" content="http://oj37kd49l.bkt.clouddn.com/atomix-failure-detector.jpg">
 
 
 
@@ -122,13 +125,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/tags/idea/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/03/23/基于Atomix的分布式系统中故障检测的实现机制 /"/>
 
 
 
 
 
-  <title> 标签: idea | Dabai的个人博客 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title> 基于Atomix的分布式系统中故障检测的实现机制 | Dabai的个人博客 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -149,7 +152,7 @@
     
   
 
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -272,46 +275,206 @@
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-collapse">
-    <div class="collection-title">
-      <h2 >
-        idea
-        <small>标签</small>
-      </h2>
-    </div>
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/23/基于Atomix的分布式系统中故障检测的实现机制 /">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dabai">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.png">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Dabai的个人博客">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Dabai的个人博客" src="">
+    </span>
+  </span>
 
     
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                基于Atomix的分布式系统中故障检测的实现机制
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-23T15:01:05+08:00">
+                2018-03-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/分布式系统/" itemprop="url" rel="index">
+                    <span itemprop="name">分布式系统</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <a href="/2018/03/23/基于Atomix的分布式系统中故障检测的实现机制 /#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/03/23/基于Atomix的分布式系统中故障检测的实现机制 /" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2018/03/23/基于Atomix的分布式系统中故障检测的实现机制 /" class="leancloud_visitors" data-flag-title="基于Atomix的分布式系统中故障检测的实现机制">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
       
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+      
+        <p><a href="https://github.com/atomix/atomix" target="_blank" rel="external">Atomix</a>是一个基于Raft协议的分布式协同框架，提供了集群管理，分布式存储等功能。其中，集群管理的一个基本功能就是集群的故障检测，也就是failure detector。下面将结合Atomix源码，分析基于Atomix的failure detector的实现机制。</p>
+<a id="more"></a>
+<p>在一个分布式系统中，可以通过心跳包（heartbeat）来实现故障检测。一个简单的实现方法如下：在本地保存一个心跳包的计时器，当收到一个节点的心跳包时就更新该计时器，表示该节点处于存活状态。当超过一定的时间（timeout）没有收到该节点的心跳包更新时，就认为该节点发生故障。</p>
+<p>通过上述方法进行故障检测，可能引起如下问题：被检测的节点没有失效，但网络的时延增大或响应的时间较长导致检测节点超过timeout时间无法收到心跳包更新，这样会引起误判。因此基于上述方法进行故障检测时，timeout的值不能太小，例如Atomix的默认设置是5s，ZooKeeper是10s。然而，较大的timeout会导致系统故障发现的时间延长，影响系统的故障恢复。</p>
+<h1 id="1-φ-failure-detector"><a href="#1-φ-failure-detector" class="headerlink" title="1. φ failure detector"></a>1. φ failure detector</h1><p>下面介绍一种提供连续的数值并根据数值的大小反映节点故障置信程度（suspicion level）的故障检测方法，同时，该方法也能够根据网络的状况动态调整故障的置信值的大小，从而在提高故障检测的正确性的同时减少故障检测的时间。另外由于该方法提供了一个连续的数值来反映故障检测的置信程度，系统中的不同应用可以根据自己对故障恢复的时间要求来动态调整故障的恢复时间。</p>
+<h2 id="1-1-φ-failure-detector的原理分析"><a href="#1-1-φ-failure-detector的原理分析" class="headerlink" title="1.1 φ failure detector的原理分析"></a>1.1 φ failure detector的原理分析</h2><p>如前文所述，系统中一个节点的失效检测的置信程度是一个随时间或网络状态变化的连续数值，即 φ，该值的计算方法如下：</p>
+<p>$$\phi(t_{now}) = -log_{10}(P_{later}(t_{now} - T_{last}))$$</p>
+<p>其中，$T_last$表示收到的心跳包的最新更新时间，$t_now$表示当前的时间，$P_{later}(t)$表示在上一个心跳包达到后，新的心跳包到达的时间间隔至少为 $t$ 的概率。</p>
+<p>例如给定一个上限值$\Phi$，如果根据$\phi \ge \Phi = 1$来判定一个节点发生了故障，那么误判的概率为 $10\%$。类似的，当$\Phi = 2$时，误判概率为 $1\%$，当$\Phi = 3$时，误判概率为 $0.1\%$。</p>
+<h2 id="1-2-φ-failure-detector的实现"><a href="#1-2-φ-failure-detector的实现" class="headerlink" title="1.2 φ failure detector的实现"></a>1.2 φ failure detector的实现</h2><p>φ failure detector是要根据已知心跳包达到时间频率预测未来的心跳包间隔，因此 φ failure detector的实现主要包括两步：</p>
+<ol>
+<li>统计过去一段时间窗口内的心跳包达到时间，窗口的大小固定，保存心跳包达到时间的个数为（WS），新的心跳包达到后将不断更新该窗口，并计算心跳包达到的平均时间间隔，方差等。</li>
+<li>根据一个特定的概率分布式函数计算$P_{later}(t)$的大小。例如，假设心跳包达到的时间间隔服从正态分布，那么，$P_{later}(t)$的计算方法如下：</li>
+</ol>
+<p>$$P_{later}(t) = \frac 1 {\sigma \sqrt{2\pi}} \int_{t}^{\infty}e^{- \frac {(x-\mu)^2} {2\sigma^2}} dx = 1 - F(t)<br>$$ </p>
+<h1 id="2-Atomix中的故障检测的实现"><a href="#2-Atomix中的故障检测的实现" class="headerlink" title="2. Atomix中的故障检测的实现"></a>2. Atomix中的故障检测的实现</h1><p>如下图所示，基于Atomix实现分布式系统的故障检测，主要是通过分布式系统的各个节点与Atomix中保存的状态机建立会话连接（session），Atomix状态机通过检测各个会话连接是否存活来实现的。</p>
+<p><img src="http://oj37kd49l.bkt.clouddn.com/atomix-failure-detector.jpg" alt="ff"></p>
+<p>这里面的心跳包有两种，一种是由<code>RaftClient</code>发送的<code>KeepAliveRequest</code>请求，该请求最后由Raft状态机的Leader处理，Leader采用写日志并更新状态机的方式处理<code>KeepAliveRequest</code>请求，各个节点然后根据最近收到的<code>KeepAliveRequest</code>请求的时间与当前的时间间隔是否超出了timeout限制来判断一个<code>RaftClient</code>，也就是一个节点是否存活，详细的源码分析参考：<a href="https://baymaxhuang.github.io/2017/11/13/Atomix%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%9ARaft%20Client%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%92%8C%E4%B8%8EServer%E7%9A%84%E4%BA%A4%E4%BA%92/" target="_blank" rel="external">Atomix源码分析：Raft Client的实现和与Server的交互</a>。由于<code>KeepAliveRequest</code>请求需要经过Leader处理，并且更新状态机，过多的<code>KeepAliveRequest</code>请求会产生较大的系统开销。在系统默认参数的设置中，timeout为5s，各个session发送<code>KeepAliveRequest</code>的时间间隔是2.5~5s。因此，通过这种方式实现故障检测的时间较长，实验测得若timeout的设置为5s，故障检测的时间平均为5s左右。</p>
+<p>另外一种心跳包就是实现φ failure detector的<code>HeartbeatRequest</code>，该心跳包由<a href="https://github.com/atomix/atomix/blob/c6ec9c793d2fe005cc64f038f509f496589fea4c/protocols/raft/src/main/java/io/atomix/protocols/raft/roles/LeaderRole.java#L234-L237" target="_blank" rel="external">LeaderRole</a>发送给各个<code>RaftClient</code>，然后通过φ failure detector来判断各个节点是否存活。由于<code>HeartbeatRequest</code>和<code>HeartbeatResponse</code>的发送和处理比简单，不会消耗过多的系统资源，因而可以较快的发送，Atomix中<code>HeartbeatRequest</code>的默认发送时间间隔是250ms。实验测得，使用了φ failure detector后，系统的故障检测时间可以缩短到1s左右。</p>
+<p>由于φ failure detector可以缩短系统的故障检测时间，因此Atomix的FollowRole节点也使用φ failure detector来检测当前的LeaderRole是否存活，若判定当前的LeaderRole处于不存活状态，FollowerRole会转变成CandidateRole并完成领导选举。详细代码参考：<a href="https://github.com/atomix/atomix/blob/c6ec9c793d2fe005cc64f038f509f496589fea4c/protocols/raft/src/main/java/io/atomix/protocols/raft/roles/FollowerRole.java#L98" target="_blank" rel="external">FollowerRole</a></p>
 
-      <h1 class="post-title">
+      
+    </div>
+
+    <div>
+      
         
-            <a class="post-title-link" href="/2016/12/02/Ubuntu-下通过apt-get安装JDK和Java-IDE/" itemprop="url">
-              
-                <span itemprop="name">Ubuntu 下通过apt-get安装JDK和Java IDE</span>
-              
-            </a>
+
+      
+    </div>
+
+    <div>
+      
         
-      </h1>
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2016-12-02T14:30:56+08:00"
-              content="2016-12-02" >
-          12-02
-        </time>
-      </div>
+      
+    </div>
 
-    </header>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Atomix/" rel="tag"># Atomix</a>
+          
+            <a href="/tags/分布式系统/" rel="tag"># 分布式系统</a>
+          
+            <a href="/tags/故障检测/" rel="tag"># 故障检测</a>
+          
+            <a href="/tags/Failure-detector/" rel="tag"># Failure detector</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/25/ONOS中基于gRPC应用的实现/" rel="next" title="ONOS中基于gRPC应用的实现">
+                <i class="fa fa-chevron-left"></i> ONOS中基于gRPC应用的实现
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </article>
 
 
-    
-  </div>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -319,6 +482,17 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
 
         </div>
         
@@ -338,8 +512,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.png"
@@ -429,6 +612,22 @@
       </section>
 
       
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-φ-failure-detector"><span class="nav-number">1.</span> <span class="nav-text">1. φ failure detector</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-φ-failure-detector的原理分析"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 φ failure detector的原理分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-φ-failure-detector的实现"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 φ failure detector的实现</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Atomix中的故障检测的实现"><span class="nav-number">2.</span> <span class="nav-text">2. Atomix中的故障检测的实现</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
 
     </div>
   </aside>
@@ -515,6 +714,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
 
   
 
@@ -531,9 +734,9 @@
 
     <script type="text/javascript">
       var disqus_shortname = 'dabais-blog';
-      var disqus_identifier = 'tags/idea/index.html';
+      var disqus_identifier = '2018/03/23/基于Atomix的分布式系统中故障检测的实现机制 /';
 
-      var disqus_title = "";
+      var disqus_title = "基于Atomix的分布式系统中故障检测的实现机制";
 
 
       function run_disqus_script(disqus_script) {
@@ -546,6 +749,13 @@
 
       run_disqus_script('count.js');
 
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
       
 
     </script>
