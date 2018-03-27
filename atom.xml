@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-03-27T09:37:14.415Z</updated>
+  <updated>2018-03-27T09:44:40.589Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2018/03/23/%E5%9F%BA%E4%BA%8EAtomix%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E4%B8%AD%E6%95%85%E9%9A%9C%E6%A3%80%E6%B5%8B%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6%20/"/>
     <id>http://yoursite.com/2018/03/23/基于Atomix的分布式系统中故障检测的实现机制 /</id>
     <published>2018-03-23T07:01:05.000Z</published>
-    <updated>2018-03-27T09:37:14.415Z</updated>
+    <updated>2018-03-27T09:44:40.589Z</updated>
     
     <content type="html"><![CDATA[<p><a href="https://github.com/atomix/atomix" target="_blank" rel="external">Atomix</a>是一个基于Raft协议的分布式协同框架，提供了集群管理，分布式存储等功能。其中，集群管理的一个基本功能就是集群的故障检测，也就是failure detector。下面将结合Atomix源码，分析基于Atomix的failure detector的实现机制。</p>
 <a id="more"></a>
@@ -42,6 +42,11 @@
 <p>这里面的心跳包有两种，一种是由<code>RaftClient</code>发送的<code>KeepAliveRequest</code>请求，该请求最后由Raft状态机的Leader处理，Leader采用写日志并更新状态机的方式处理<code>KeepAliveRequest</code>请求，各个节点然后根据最近收到的<code>KeepAliveRequest</code>请求的时间与当前的时间间隔是否超出了timeout限制来判断一个<code>RaftClient</code>，也就是一个节点是否存活，详细的源码分析参考：<a href="https://baymaxhuang.github.io/2017/11/13/Atomix%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%9ARaft%20Client%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%92%8C%E4%B8%8EServer%E7%9A%84%E4%BA%A4%E4%BA%92/" target="_blank" rel="external">Atomix源码分析：Raft Client的实现和与Server的交互</a>。由于<code>KeepAliveRequest</code>请求需要经过Leader处理，并且更新状态机，过多的<code>KeepAliveRequest</code>请求会产生较大的系统开销。在系统默认参数的设置中，timeout为5s，各个session发送<code>KeepAliveRequest</code>的时间间隔是2.5~5s。因此，通过这种方式实现故障检测的时间较长，实验测得若timeout的设置为5s，故障检测的时间平均为5s左右。</p>
 <p>另外一种心跳包就是实现φ failure detector的<code>HeartbeatRequest</code>，该心跳包由<a href="https://github.com/atomix/atomix/blob/c6ec9c793d2fe005cc64f038f509f496589fea4c/protocols/raft/src/main/java/io/atomix/protocols/raft/roles/LeaderRole.java#L234-L237" target="_blank" rel="external">LeaderRole</a>发送给各个<code>RaftClient</code>，然后通过φ failure detector来判断各个节点是否存活。由于<code>HeartbeatRequest</code>和<code>HeartbeatResponse</code>的发送和处理比简单，不会消耗过多的系统资源，因而可以较快的发送，Atomix中<code>HeartbeatRequest</code>的默认发送时间间隔是250ms。实验测得，使用了φ failure detector后，系统的故障检测时间可以缩短到1s左右。</p>
 <p>由于φ failure detector可以缩短系统的故障检测时间，因此Atomix的FollowRole节点也使用φ failure detector来检测当前的LeaderRole是否存活，若判定当前的LeaderRole处于不存活状态，FollowerRole会转变成CandidateRole并完成领导选举。详细代码参考：<a href="https://github.com/atomix/atomix/blob/c6ec9c793d2fe005cc64f038f509f496589fea4c/protocols/raft/src/main/java/io/atomix/protocols/raft/roles/FollowerRole.java#L98" target="_blank" rel="external">FollowerRole</a></p>
+<p>参考：</p>
+<ul>
+<li><a href="http://fubica.lsd.ufcg.edu.br/hp/cursos/cfsc/papers/hayashibara04theaccrual.pdf" target="_blank" rel="external">The φ Accrual Failure Detector</a></li>
+<li><a href="https://baymaxhuang.github.io/2017/11/13/Atomix%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%9ARaft%20Client%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%92%8C%E4%B8%8EServer%E7%9A%84%E4%BA%A4%E4%BA%92/" target="_blank" rel="external">Atomix源码分析：Raft Client的实现和与Server的交互</a></li>
+</ul>
 ]]></content>
     
     <summary type="html">
@@ -114,9 +119,9 @@
     
       <category term="ONOS" scheme="http://yoursite.com/tags/ONOS/"/>
     
-      <category term="OSGi" scheme="http://yoursite.com/tags/OSGi/"/>
-    
       <category term="gRPC" scheme="http://yoursite.com/tags/gRPC/"/>
+    
+      <category term="OSGi" scheme="http://yoursite.com/tags/OSGi/"/>
     
   </entry>
   
@@ -125,7 +130,7 @@
     <link href="http://yoursite.com/2017/11/13/Atomix%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%9ARaft%20Client%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%92%8C%E4%B8%8EServer%E7%9A%84%E4%BA%A4%E4%BA%92/"/>
     <id>http://yoursite.com/2017/11/13/Atomix源码分析：Raft Client的实现和与Server的交互/</id>
     <published>2017-11-13T13:16:50.000Z</published>
-    <updated>2018-03-27T09:37:11.399Z</updated>
+    <updated>2018-03-27T12:17:01.535Z</updated>
     
     <content type="html"><![CDATA[<p><a href="https://github.com/atomix/atomix" target="_blank" rel="external">Atomix</a>是一个基于Raft协议的分布式协同框架，是ONOS分布式集群和分布式原语实现的基础，Atomix提供集群的管理，通信，领导选择，Key-Value存储，以及数据分片等功能。从Atomix 2.0开始，raft协议的实现<a href="https://github.com/atomix/copycat" target="_blank" rel="external">Copycat</a>已经集成到Atomix了，下面将结合Atomix 2.0对Atomix源码进行分析，从而深入理解Raft协议的原理和Atomix的工作机制。（更新中~）</p>
 <a id="more"></a>
@@ -153,7 +158,7 @@
 <p>上面的delta表示从发送keep-alive请求到获得该请求响应的时间间隔，一般该时间很短（2~4ms），因此若timeout设置成6000ms，那么keep-alive消息的发送间隔为4500ms左右。</p>
 <h2 id="1-4-Raft状态机保存并更新会话信息"><a href="#1-4-Raft状态机保存并更新会话信息" class="headerlink" title="1.4 Raft状态机保存并更新会话信息"></a>1.4 Raft状态机保存并更新会话信息</h2><p>Raft Client与Raft Server的会话信息保存在Raft状态机中，也是就是说各个节点保存有与整个Raft cluster建立的所有的会话信息，并且Raft状态机会根据<code>KeepAliveRequest</code>和<code>KeepAliveResponse</code>消息来不断更新状态机，从而判断各个会话是否存活。</p>
 <p>Raft状态机更新通过类<code>RaftServiceManager</code>实现，该类里面的<code>applyKeepAlive</code>方法就是根据<code>KeepAliveRequest</code>请求来更新Raft状态机。通过这部分代码发现，Raft状态机总是以<code>KeepAliveEntry</code>的时间戳来更新当前会话的最新时间，而<code>KeepAliveEntry</code>是由Leader产生的，因此即使各个节点的物理时间不同步，但各个节点会话的保存的所有会话的更新时间都是一样的。由于更新Raft状态机是通过写日志的方式进行的，Atomix处理<code>KeepAliveRequest</code>请求比较消耗系统资源。</p>
-<p>另外需要注意的是，若Leader节点发生失效后选举产生了新的Leader节点，Raft状态机会重置各个会话的Timeout计时器，从而避免选举时间过长导致判定Raft会话失效。这部分代码也在<code>RaftServiceManager</code>类里面的<code>applyInitialize</code>方法中实现：</p>
+<p>另外需要注意的是，若Leader节点发生失效后选举产生了新的Leader节点，Raft状态机会重置各个会话的Timeout计时器，从而避免选举时间过长导致判定Raft会话失效。这部分代码在<code>RaftServiceManager</code>类里面的<code>applyInitialize</code>方法中实现：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">* Applies an initialize entry.</div><div class="line">* &lt;p&gt;</div><div class="line">* Initialize entries are used only at the beginning of a new leader's term to force the commitment of entries from</div><div class="line">* prior terms, therefore no logic needs to take place.</div><div class="line">*/</div><div class="line"><span class="function"><span class="keyword">private</span> CompletableFuture&lt;Void&gt; <span class="title">applyInitialize</span><span class="params">(Indexed&lt;InitializeEntry&gt; entry)</span> </span>&#123;</div><div class="line"><span class="keyword">for</span> (DefaultServiceContext service : services.values()) &#123;</div><div class="line">    service.keepAliveSessions(entry.index(), entry.entry().timestamp());</div><div class="line">&#125;</div><div class="line"><span class="keyword">return</span> CompletableFuture.completedFuture(<span class="keyword">null</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h1 id="2-Raft-client和raft-server的交互"><a href="#2-Raft-client和raft-server的交互" class="headerlink" title="2. Raft client和raft server的交互"></a>2. Raft client和raft server的交互</h1><h2 id="2-1-Raft-client和raft-server间消息的发送和回传"><a href="#2-1-Raft-client和raft-server间消息的发送和回传" class="headerlink" title="2.1 Raft client和raft server间消息的发送和回传"></a>2.1 Raft client和raft server间消息的发送和回传</h2><p>由于Atomix中使用了很多函数式编程以及回调处理，很多的代码调用关系不是很直观，下面将以<code>RaftFuzzTest</code>的实现为例介绍Keep-Alive消息的发送和处理流程。</p>
 <ol>
