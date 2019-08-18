@@ -94,13 +94,13 @@
 <meta property="og:site_name" content="Dabai的个人博客">
 <meta property="og:description" content="ONOS是一个分布式的控制器，为了提高数据的读写效率，采用自实现的基于In-Memory的Key-Value数据存储系统。针对实际的需要，不同的数据模型采用不同的数据一致性方法，即强一致性（strong consistency）和最终一致性（eventually consistency）。ONOS使用raft协议实现强一致性，使用anti-entropy（gossip）协议实现最终一致性。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://oj37kd49l.bkt.clouddn.com/eventually%20consistency.png">
-<meta property="og:image" content="http://oj37kd49l.bkt.clouddn.com/data%20placement.png">
-<meta property="og:updated_time" content="2017-12-21T12:49:38.000Z">
+<meta property="og:image" content="http://yoursite.com/images/eventually%20consistency.png">
+<meta property="og:image" content="http://yoursite.com/images/data%20placement.png">
+<meta property="og:updated_time" content="2019-08-18T10:03:31.256Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ONOS cluster分布式数据存储和东西向通信">
 <meta name="twitter:description" content="ONOS是一个分布式的控制器，为了提高数据的读写效率，采用自实现的基于In-Memory的Key-Value数据存储系统。针对实际的需要，不同的数据模型采用不同的数据一致性方法，即强一致性（strong consistency）和最终一致性（eventually consistency）。ONOS使用raft协议实现强一致性，使用anti-entropy（gossip）协议实现最终一致性。">
-<meta name="twitter:image" content="http://oj37kd49l.bkt.clouddn.com/eventually%20consistency.png">
+<meta name="twitter:image" content="http://yoursite.com/images/eventually%20consistency.png">
 
 
 
@@ -415,7 +415,7 @@
 <ul>
 <li>最终一致性(eventual consistency)：多个进程或节点在相同的时刻可能对相同数据有不同的访问值，但经过一定时间后数据的更新会达成一致，ONOS使用事件乐观异步复制和anti-entropy(gossip)协议实现最终一致性。下面是最终一致性的实现方法：</li>
 </ul>
-<p><img src="http://oj37kd49l.bkt.clouddn.com/eventually%20consistency.png" alt></p>
+<p><img src="/images/eventually%20consistency.png" alt></p>
 <p>何时使用强一致性和弱一致性，这取决于系统对不同模型的一致性需求，同时要考虑实际一致性的可操作性。例如每个控制器都要有网络的全局拓扑信息，在很多情况下，拓扑信息是不变的，拓扑信息的变化是由于物理网络的变化，控制器只是拓扑信息的<strong>观察者</strong>，这在实现强一致性过程中需要很多代价，因此对于物理拓扑，ONOS使用最终一致性。事实上，传统的OSPF协议也是使用弱一致性快速收敛的。若控制器是数据变化的<strong>生产者</strong>，往往采用强一致性，如Intent下发，控制器到交换机的主从关系的维护。下面是ONOS中使用的一致性模型分类：</p>
 <table>
 <thead>
@@ -449,7 +449,7 @@
 </li>
 </ul>
 <h1 id="3-ONOS集群数据分片"><a href="#3-ONOS集群数据分片" class="headerlink" title="3. ONOS集群数据分片"></a>3. ONOS集群数据分片</h1><p>为了提高数据的访问效率，ONOS数据采用分片式(partition or shard)存储，每一个partition有多个（默认是3个）member(ONOS node)， 又称为一个raft group或partition server，每个partition的多个member使用raft协议（atomix框架的copycat实现）来保证数据的一致性，ONOS使用client-server模型来实现对不同partition数据的访问。默认的，对于n个节点的集群，有n个3-node partition，具体看查看<code>ClusterManager</code>源码。每个partition的数据更新是串行的（保证一致性），不同的partition的数据可以并行更新（数据分片提高数据的访问效率），使用2PC协议实现数据跨分片更新事务。下面是数据的分片复制图示：</p>
-<p><img src="http://oj37kd49l.bkt.clouddn.com/data%20placement.png" alt></p>
+<p><img src="/images/data%20placement.png" alt></p>
 <p>raft使用复制状态机的方式实现数据的一致性，可容忍少部分节点的故障失效，因此若数据分片大小为3，那么最多可容忍一个节点的失效。需要注意的是<strong>可容忍失效的节点数目与数据分片的个数有关，而与ONOS节点个数没有直接关系</strong>。</p>
 <p>关于数据分片的管理和同步，可以查看<code>PartitionService</code>, <code>PartitionAdminService</code>，<code>PartitionManager</code>，<code>StoragePartition</code>，<code>StoragePartitionClient</code>，<code>StoragePartitionServer</code>等接口和类，注意：<code>StoragePartition</code>与<code>StoragePartitionClient</code>和<code>StoragePartitionServer</code>是相互引用的关系！下面是<code>PartitionManager</code>中的一段代码：</p>
 <p><strong><em>ps</em>：</strong> 这一小段代码就用到了java8的几个重要特性，如lambda表达式，流式处理，方法引用等，很酷吧！:wink:</p>

@@ -94,14 +94,14 @@
 <meta property="og:site_name" content="Dabai的个人博客">
 <meta property="og:description" content="Flow Rule Subsystem实现Flow rule的管理，存储和同步，用户可通过Flow Rule Subsystem提供的北向API（FlowRuleService）查询，下发和删除Flow rule。下面将结合Flow Rule Subsystem的代码，并以OpenFlow为例，简要分析Flow Rule Subsystem的实现过程，希望以此抛砖引玉。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://oj37kd49l.bkt.clouddn.com/FlowRuleManger.png">
-<meta property="og:image" content="http://oj37kd49l.bkt.clouddn.com/DistributedFlowRuleStore.png">
-<meta property="og:image" content="http://oj37kd49l.bkt.clouddn.com/onos%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-image2.png">
-<meta property="og:updated_time" content="2017-07-08T17:14:00.000Z">
+<meta property="og:image" content="http://yoursite.com/images/FlowRuleManger.png">
+<meta property="og:image" content="http://yoursite.com/images/DistributedFlowRuleStore.png">
+<meta property="og:image" content="http://yoursite.com/images/onos%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-image2.png">
+<meta property="og:updated_time" content="2019-08-18T10:05:14.176Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Flow Rule Subsystem简要分析">
 <meta name="twitter:description" content="Flow Rule Subsystem实现Flow rule的管理，存储和同步，用户可通过Flow Rule Subsystem提供的北向API（FlowRuleService）查询，下发和删除Flow rule。下面将结合Flow Rule Subsystem的代码，并以OpenFlow为例，简要分析Flow Rule Subsystem的实现过程，希望以此抛砖引玉。">
-<meta name="twitter:image" content="http://oj37kd49l.bkt.clouddn.com/FlowRuleManger.png">
+<meta name="twitter:image" content="http://yoursite.com/images/FlowRuleManger.png">
 
 
 
@@ -401,9 +401,9 @@
 <p>分析Flow Rule Subsystem之前，我们需要对ONOS的子系统结构（Subsystem Structure）和事件（Event）机制有比较好的了解，参考<a href="https://baymaxhuang.github.io/2017/01/05/ONOS%E5%AD%90%E7%B3%BB%E7%BB%9F%E7%BB%93%E6%9E%84%E5%92%8C%E4%BA%8B%E4%BB%B6%E5%88%86%E5%8F%91%E5%A4%84%E7%90%86%E6%9C%BA%E5%88%B6/" target="_blank" rel="noopener">ONOS子系统结构和事件调度处理机制</a></p>
 <h1 id="Flow-Rule-Subsystem分析"><a href="#Flow-Rule-Subsystem分析" class="headerlink" title="Flow Rule Subsystem分析"></a>Flow Rule Subsystem分析</h1><p>在ONOS Core层，Flow Rule Subsystem的实现主要包括FlowRuleManager和DistributedFlowRuleStore这两个类，FlowRuleManager负责北向和南向接口的实现（FlowRuleService，FlowProviderService，FlowRuleProviderService等），是子系统的中枢，而DistributedFlowRuleStore负责数据的存储同步，是分布式实现的核心。下面是这两个类的UML图，</p>
 <p>FlowRuleManger类结构图：</p>
-<p><img src="http://oj37kd49l.bkt.clouddn.com/FlowRuleManger.png" alt></p>
+<p><img src="/images/FlowRuleManger.png" alt></p>
 <p>DistributedFlowRuleStore类结构图：</p>
-<p><img src="http://oj37kd49l.bkt.clouddn.com/DistributedFlowRuleStore.png" alt></p>
+<p><img src="/images/DistributedFlowRuleStore.png" alt></p>
 <p>下面将以FlowRuleService方法applyFlowRules实现过程简要分析Flow Rule子系统。</p>
 <ol>
 <li><p>每一个flowRule被封装成一个FlowRuleOperation，不同flowRule的集合被封装成一个FlowRuleOperations，然后调用apply方法。看代码注释，FlowRuleOperations是被分解成不同stage的FlowRuleOperation的集合，每一个stage是一组FlowRuleOperation的集合，不同stage的FlowRuleOperation集合保存在list中：</p>
@@ -439,7 +439,7 @@
 <li><p>以上就是FlowRule子系统下发flow rule的过程了，需要注意的是，任何ONOS instance可以向flow service请求对网络中的任何设备下发flow rule，但当这个网络设的master不是当前的ONOS instance时，该flow rule会被发送到设备的master instance，最终由master instance完成flow rule的下发操作。具体的实现过程在上面已经结合代码进行分析了，如下图所示：</p>
 </li>
 </ol>
-<p><img src="http://oj37kd49l.bkt.clouddn.com/onos%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-image2.png" alt="image2"></p>
+<p><img src="/images/onos%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-image2.png" alt="image2"></p>
 <h1 id="3-Flow-Rule的存储"><a href="#3-Flow-Rule的存储" class="headerlink" title="3. Flow Rule的存储"></a>3. Flow Rule的存储</h1><p>Flow rule的存储通过DistributedFlowRuleStore来实现，实现的接口服务是FlowRuleStore，需要考虑存储，备份，以及同步等问题。需要注意的是，ONOS会存储Flow rule并保持控制器和网络设备中Flow rule信息的一致性，若控制器发现了网络设备中有控制器没有存储的Flow rule条目，ONOS会将该Flow rule删除。同时，当master控制器对它的subnet中的device下发Flow rule信息后，会选择一个或多个（默认设置是2个备份节点，参考DistributedFlowRuleStore源码）其它的standby节点备份flowrule信息，从而使得当前节点down掉后能够恢复Flow rule信息。通常优先选择当前节点down掉后，接管该subnet的standby节点作为备份节点。</p>
 <p><em>注</em>：</p>
 <p>ONOS控制器各个node节点与device设备有三种mastership关系：</p>

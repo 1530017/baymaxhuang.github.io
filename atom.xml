@@ -340,7 +340,7 @@
     <link href="http://yoursite.com/2017/02/15/ONOS-cluster%E5%88%86%E5%B8%83%E5%BC%8F%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E5%92%8C%E4%B8%9C%E8%A5%BF%E5%90%91%E9%80%9A%E4%BF%A1/"/>
     <id>http://yoursite.com/2017/02/15/ONOS-cluster分布式数据存储和东西向通信/</id>
     <published>2017-02-15T07:38:57.000Z</published>
-    <updated>2017-12-21T12:49:38.000Z</updated>
+    <updated>2019-08-18T10:03:31.256Z</updated>
     
     <content type="html"><![CDATA[<p>ONOS是一个分布式的控制器，为了提高数据的读写效率，采用自实现的基于In-Memory的Key-Value数据存储系统。针对实际的需要，不同的数据模型采用不同的数据一致性方法，即强一致性（strong consistency）和最终一致性（eventually consistency）。ONOS使用raft协议实现强一致性，使用anti-entropy（gossip）协议实现最终一致性。</p>
 <a id="more"></a>
@@ -362,7 +362,7 @@
 <ul>
 <li>最终一致性(eventual consistency)：多个进程或节点在相同的时刻可能对相同数据有不同的访问值，但经过一定时间后数据的更新会达成一致，ONOS使用事件乐观异步复制和anti-entropy(gossip)协议实现最终一致性。下面是最终一致性的实现方法：</li>
 </ul>
-<p><img src="http://oj37kd49l.bkt.clouddn.com/eventually%20consistency.png" alt></p>
+<p><img src="/images/eventually%20consistency.png" alt></p>
 <p>何时使用强一致性和弱一致性，这取决于系统对不同模型的一致性需求，同时要考虑实际一致性的可操作性。例如每个控制器都要有网络的全局拓扑信息，在很多情况下，拓扑信息是不变的，拓扑信息的变化是由于物理网络的变化，控制器只是拓扑信息的<strong>观察者</strong>，这在实现强一致性过程中需要很多代价，因此对于物理拓扑，ONOS使用最终一致性。事实上，传统的OSPF协议也是使用弱一致性快速收敛的。若控制器是数据变化的<strong>生产者</strong>，往往采用强一致性，如Intent下发，控制器到交换机的主从关系的维护。下面是ONOS中使用的一致性模型分类：</p>
 <table>
 <thead>
@@ -396,7 +396,7 @@
 </li>
 </ul>
 <h1 id="3-ONOS集群数据分片"><a href="#3-ONOS集群数据分片" class="headerlink" title="3. ONOS集群数据分片"></a>3. ONOS集群数据分片</h1><p>为了提高数据的访问效率，ONOS数据采用分片式(partition or shard)存储，每一个partition有多个（默认是3个）member(ONOS node)， 又称为一个raft group或partition server，每个partition的多个member使用raft协议（atomix框架的copycat实现）来保证数据的一致性，ONOS使用client-server模型来实现对不同partition数据的访问。默认的，对于n个节点的集群，有n个3-node partition，具体看查看<code>ClusterManager</code>源码。每个partition的数据更新是串行的（保证一致性），不同的partition的数据可以并行更新（数据分片提高数据的访问效率），使用2PC协议实现数据跨分片更新事务。下面是数据的分片复制图示：</p>
-<p><img src="http://oj37kd49l.bkt.clouddn.com/data%20placement.png" alt></p>
+<p><img src="/images/data%20placement.png" alt></p>
 <p>raft使用复制状态机的方式实现数据的一致性，可容忍少部分节点的故障失效，因此若数据分片大小为3，那么最多可容忍一个节点的失效。需要注意的是<strong>可容忍失效的节点数目与数据分片的个数有关，而与ONOS节点个数没有直接关系</strong>。</p>
 <p>关于数据分片的管理和同步，可以查看<code>PartitionService</code>, <code>PartitionAdminService</code>，<code>PartitionManager</code>，<code>StoragePartition</code>，<code>StoragePartitionClient</code>，<code>StoragePartitionServer</code>等接口和类，注意：<code>StoragePartition</code>与<code>StoragePartitionClient</code>和<code>StoragePartitionServer</code>是相互引用的关系！下面是<code>PartitionManager</code>中的一段代码：</p>
 <p><strong><em>ps</em>：</strong> 这一小段代码就用到了java8的几个重要特性，如lambda表达式，流式处理，方法引用等，很酷吧！:wink:</p>
@@ -455,16 +455,16 @@
     <link href="http://yoursite.com/2017/01/15/Flow-Rule-Subsystem%E7%AE%80%E8%A6%81%E5%88%86%E6%9E%90/"/>
     <id>http://yoursite.com/2017/01/15/Flow-Rule-Subsystem简要分析/</id>
     <published>2017-01-15T04:43:35.000Z</published>
-    <updated>2017-07-08T17:14:00.000Z</updated>
+    <updated>2019-08-18T10:05:14.176Z</updated>
     
     <content type="html"><![CDATA[<p>Flow Rule Subsystem实现Flow rule的管理，存储和同步，用户可通过Flow Rule Subsystem提供的北向API（FlowRuleService）查询，下发和删除Flow rule。下面将结合Flow Rule Subsystem的代码，并以OpenFlow为例，简要分析Flow Rule Subsystem的实现过程，希望以此抛砖引玉。</p>
 <a id="more"></a>
 <p>分析Flow Rule Subsystem之前，我们需要对ONOS的子系统结构（Subsystem Structure）和事件（Event）机制有比较好的了解，参考<a href="https://baymaxhuang.github.io/2017/01/05/ONOS%E5%AD%90%E7%B3%BB%E7%BB%9F%E7%BB%93%E6%9E%84%E5%92%8C%E4%BA%8B%E4%BB%B6%E5%88%86%E5%8F%91%E5%A4%84%E7%90%86%E6%9C%BA%E5%88%B6/" target="_blank" rel="noopener">ONOS子系统结构和事件调度处理机制</a></p>
 <h1 id="Flow-Rule-Subsystem分析"><a href="#Flow-Rule-Subsystem分析" class="headerlink" title="Flow Rule Subsystem分析"></a>Flow Rule Subsystem分析</h1><p>在ONOS Core层，Flow Rule Subsystem的实现主要包括FlowRuleManager和DistributedFlowRuleStore这两个类，FlowRuleManager负责北向和南向接口的实现（FlowRuleService，FlowProviderService，FlowRuleProviderService等），是子系统的中枢，而DistributedFlowRuleStore负责数据的存储同步，是分布式实现的核心。下面是这两个类的UML图，</p>
 <p>FlowRuleManger类结构图：</p>
-<p><img src="http://oj37kd49l.bkt.clouddn.com/FlowRuleManger.png" alt></p>
+<p><img src="/images/FlowRuleManger.png" alt></p>
 <p>DistributedFlowRuleStore类结构图：</p>
-<p><img src="http://oj37kd49l.bkt.clouddn.com/DistributedFlowRuleStore.png" alt></p>
+<p><img src="/images/DistributedFlowRuleStore.png" alt></p>
 <p>下面将以FlowRuleService方法applyFlowRules实现过程简要分析Flow Rule子系统。</p>
 <ol>
 <li><p>每一个flowRule被封装成一个FlowRuleOperation，不同flowRule的集合被封装成一个FlowRuleOperations，然后调用apply方法。看代码注释，FlowRuleOperations是被分解成不同stage的FlowRuleOperation的集合，每一个stage是一组FlowRuleOperation的集合，不同stage的FlowRuleOperation集合保存在list中：</p>
@@ -500,7 +500,7 @@
 <li><p>以上就是FlowRule子系统下发flow rule的过程了，需要注意的是，任何ONOS instance可以向flow service请求对网络中的任何设备下发flow rule，但当这个网络设的master不是当前的ONOS instance时，该flow rule会被发送到设备的master instance，最终由master instance完成flow rule的下发操作。具体的实现过程在上面已经结合代码进行分析了，如下图所示：</p>
 </li>
 </ol>
-<p><img src="http://oj37kd49l.bkt.clouddn.com/onos%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-image2.png" alt="image2"></p>
+<p><img src="/images/onos%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-image2.png" alt="image2"></p>
 <h1 id="3-Flow-Rule的存储"><a href="#3-Flow-Rule的存储" class="headerlink" title="3. Flow Rule的存储"></a>3. Flow Rule的存储</h1><p>Flow rule的存储通过DistributedFlowRuleStore来实现，实现的接口服务是FlowRuleStore，需要考虑存储，备份，以及同步等问题。需要注意的是，ONOS会存储Flow rule并保持控制器和网络设备中Flow rule信息的一致性，若控制器发现了网络设备中有控制器没有存储的Flow rule条目，ONOS会将该Flow rule删除。同时，当master控制器对它的subnet中的device下发Flow rule信息后，会选择一个或多个（默认设置是2个备份节点，参考DistributedFlowRuleStore源码）其它的standby节点备份flowrule信息，从而使得当前节点down掉后能够恢复Flow rule信息。通常优先选择当前节点down掉后，接管该subnet的standby节点作为备份节点。</p>
 <p><em>注</em>：</p>
 <p>ONOS控制器各个node节点与device设备有三种mastership关系：</p>
