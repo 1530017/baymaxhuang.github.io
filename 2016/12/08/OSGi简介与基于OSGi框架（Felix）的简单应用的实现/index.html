@@ -94,13 +94,13 @@
 <meta property="og:site_name" content="Dabai的个人博客">
 <meta property="og:description" content="OSGi(Open Service Gateway Initiative)，其英文定义为：The Dynamic Module System for Java。由此可见，OSGi的主要职责就是为了让开发者能够构建动态化、模块化的Java系统。使用OSGi，系统的各个组件就像插件一样，暴露特定的接口，实现“即插即用”。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://oj37kd49l.bkt.clouddn.com/bundle.png">
-<meta property="og:image" content="http://oj37kd49l.bkt.clouddn.com/osgi-service-registry.jpg">
-<meta property="og:updated_time" content="2017-03-20T06:56:02.000Z">
+<meta property="og:image" content="http://yoursite.com/images/bundle.png">
+<meta property="og:image" content="http://yoursite.com/images/osgi-service-registry.jpg">
+<meta property="og:updated_time" content="2019-08-18T10:10:01.269Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="OSGi简介与基于OSGi框架（Felix）的简单应用实现">
 <meta name="twitter:description" content="OSGi(Open Service Gateway Initiative)，其英文定义为：The Dynamic Module System for Java。由此可见，OSGi的主要职责就是为了让开发者能够构建动态化、模块化的Java系统。使用OSGi，系统的各个组件就像插件一样，暴露特定的接口，实现“即插即用”。">
-<meta name="twitter:image" content="http://oj37kd49l.bkt.clouddn.com/bundle.png">
+<meta name="twitter:image" content="http://yoursite.com/images/bundle.png">
 
 
 
@@ -398,7 +398,7 @@
         <p>OSGi(Open Service Gateway Initiative)，其英文定义为：The Dynamic Module System for Java。由此可见，OSGi的主要职责就是为了让开发者能够构建动态化、模块化的Java系统。使用OSGi，系统的各个组件就像插件一样，暴露特定的接口，实现“即插即用”。</p>
 <a id="more"></a>
 <h1 id="1-OSGi的基本概念"><a href="#1-OSGi的基本概念" class="headerlink" title="1. OSGi的基本概念"></a>1. OSGi的基本概念</h1><h2 id="1-1-bundle"><a href="#1-1-bundle" class="headerlink" title="1.1 bundle"></a>1.1 bundle</h2><p>在OSGi中，各个组件以bundle的形式存在，但从形式上讲，bundle也就是在META-INF目录下的MANIFEST.MF文件中加入了OSGi特定描述的jar包。bundle的生命周期被OSGi框架所管理，具有如下几个状态：INSTALLED, RESOLVED,STARTING, ACTIVE, STOPPING,  UNINSTALLED。bundle各个生命周期状态的转换如下图所示：</p>
-<p><img src="http://oj37kd49l.bkt.clouddn.com/bundle.png" alt></p>
+<p><img src="/images/bundle.png" alt></p>
 <p>bundle通过配置jar包中的MANIFEST.MF文件控制从bundle导出的包。而没有导出的包在bundle外部不能使用，这样就很好的完成了内部类和外部类的隔离。bundle可以被动态的安装、启动、停止和卸载。bundle是服务（Service）和组件（Component）的载体。事实上，不管是通过BundleContext注册和获取服务的方式，还是Declarative Service进行声明注入的方式，都是在编写bundle。</p>
 <p>在OSGi中，每个bundle都有独立于其它bundle的ClassLoader，正因为这样，各个bundle的类是相互隔离的。但一个bundle可能会用到另外一个bundle的类，bundle之间的交户通过以下三种方式实现：</p>
 <ul>
@@ -415,7 +415,7 @@
 </li>
 </ul>
 <h2 id="1-2-OSGi-Service"><a href="#1-2-OSGi-Service" class="headerlink" title="1.2 OSGi Service"></a>1.2 OSGi Service</h2><p> 一个OSGi Service就是注册到OSGi框架中的Java对象的引用。在注册的时候可以设置这个Service的属性，从而在获取Service的时候可以进行过滤。OSGi拥有一个集中的服务注册中心，它遵循<strong>发布-查询-绑定</strong>模型，如下图所示。</p>
-<p> <img src="http://oj37kd49l.bkt.clouddn.com/osgi-service-registry.jpg" alt></p>
+<p> <img src="/images/osgi-service-registry.jpg" alt></p>
 <p> bundle可以通过bundle的上下文去注册Service或去查询Service，获取对应服务的对象引用。当然还有其它方式实现OSGi Service，就是上面提到的声明式服务和Blueprint服务。关于OSGi Service使用方式的选择问题，参考：</p>
 <p> <a href="http://www.infoq.com/cn/news/2013/12/osgi-blueprint-or-ds" target="_blank" rel="noopener">OSGi中该使用Blueprint还是声明式服务?</a></p>
 <p> 后面的例子将介绍使用BundleContext注册和获取OSGi Service。</p>
