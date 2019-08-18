@@ -6,15 +6,15 @@
 
 
 <html class="theme-next mist use-motion" lang="zh-Hans">
-<head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -29,7 +29,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -63,23 +63,23 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="Java,CBench,Controller," />
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
 
 
-
-
-
-  <link rel="alternate" href="/atom.xml" title="Dabai的个人博客" type="application/atom+xml" />
+  <meta name="keywords" content="Java,CBench,Controller,">
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+  <link rel="alternate" href="/atom.xml" title="Dabai的个人博客" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
 
 
 
@@ -87,19 +87,21 @@
 
 
 <meta name="description" content="CBench是一个基于OpenFlow协议的控制器性能测试工具，由于笔者在控制器开发过程需要测试控制器的性能，因而研究了CBench的相关代码，并做了一些开发和优化。下面是笔者使用CBench测试控制器性能及控制器性能调优总结。">
+<meta name="keywords" content="Java,CBench,Controller">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用CBench测试控制器性能及控制器性能调优总结">
 <meta property="og:url" content="http://yoursite.com/2017/06/26/使用CBench测试控制器性能及控制器性能调优总结/index.html">
 <meta property="og:site_name" content="Dabai的个人博客">
 <meta property="og:description" content="CBench是一个基于OpenFlow协议的控制器性能测试工具，由于笔者在控制器开发过程需要测试控制器的性能，因而研究了CBench的相关代码，并做了一些开发和优化。下面是笔者使用CBench测试控制器性能及控制器性能调优总结。">
-<meta property="og:image" content="http://oj37kd49l.bkt.clouddn.com/cpu&memory.png">
-<meta property="og:image" content="http://oj37kd49l.bkt.clouddn.com/Java%20method%20time.png">
-<meta property="og:image" content="http://oj37kd49l.bkt.clouddn.com/pof-snapshot.png">
-<meta property="og:updated_time" content="2017-08-17T03:23:49.202Z">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/cpu&memory.png">
+<meta property="og:image" content="http://yoursite.com/images/Java%20method%20time.png">
+<meta property="og:image" content="http://yoursite.com/images/pof-snapshot.png">
+<meta property="og:updated_time" content="2019-08-18T09:33:02.311Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用CBench测试控制器性能及控制器性能调优总结">
 <meta name="twitter:description" content="CBench是一个基于OpenFlow协议的控制器性能测试工具，由于笔者在控制器开发过程需要测试控制器的性能，因而研究了CBench的相关代码，并做了一些开发和优化。下面是笔者使用CBench测试控制器性能及控制器性能调优总结。">
-<meta name="twitter:image" content="http://oj37kd49l.bkt.clouddn.com/cpu&memory.png">
+<meta name="twitter:image" content="http://yoursite.com/images/cpu&memory.png">
 
 
 
@@ -127,7 +129,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/06/26/使用CBench测试控制器性能及控制器性能调优总结/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/06/26/使用CBench测试控制器性能及控制器性能调优总结/">
 
 
 
@@ -162,7 +164,7 @@
   
 
   <div class="custom-logo-site-title">
-    <a href="/"  class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <span class="site-title">Dabai的个人博客</span>
       <span class="logo-line-after"><i></i></span>
@@ -189,7 +191,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -199,7 +201,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -209,7 +211,7 @@
         <li class="menu-item menu-item-categories">
           <a href="/categories" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
             分类
           </a>
@@ -219,7 +221,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -229,7 +231,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             关于
           </a>
@@ -242,7 +244,7 @@
             <a href="javascript:;" class="popup-trigger">
           
             
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
             
             搜索
           </a>
@@ -291,14 +293,14 @@
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="Dabai">
-    <meta itemprop="description" content="">
+    <meta itemprop="description" content>
     <meta itemprop="image" content="/images/avatar.png">
   </span>
 
   <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
     <meta itemprop="name" content="Dabai的个人博客">
     <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="Dabai的个人博客" src="">
+      <img style="display:none;" itemprop="url image" alt="Dabai的个人博客" src>
     </span>
   </span>
 
@@ -335,7 +337,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
               <span class="post-meta-divider">|</span>
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -396,7 +398,7 @@
       
         <p>CBench是一个基于OpenFlow协议的控制器性能测试工具，由于笔者在控制器开发过程需要测试控制器的性能，因而研究了CBench的相关代码，并做了一些开发和优化。下面是笔者使用CBench测试控制器性能及控制器性能调优总结。</p>
 <a id="more"></a>
-<h1 id="1-CBench原理及其使用"><a href="#1-CBench原理及其使用" class="headerlink" title="1. CBench原理及其使用"></a>1. CBench原理及其使用</h1><h2 id="1-1-CBench原理"><a href="#1-1-CBench原理" class="headerlink" title="1.1 CBench原理"></a>1.1 CBench原理</h2><p>CBench通过伪造交换机（fakeswitch）与控制器握手，每个交换机与控制器建立一个socket连接，使用<a href="http://www.cnblogs.com/Anker/archive/2013/08/15/3261006.html" target="_blank" rel="external">poll方式实现I/O多路复用</a>，整个程序是一个单线程程序。CBench可以工作在以下两种模式：</p>
+<h1 id="1-CBench原理及其使用"><a href="#1-CBench原理及其使用" class="headerlink" title="1. CBench原理及其使用"></a>1. CBench原理及其使用</h1><h2 id="1-1-CBench原理"><a href="#1-1-CBench原理" class="headerlink" title="1.1 CBench原理"></a>1.1 CBench原理</h2><p>CBench通过伪造交换机（fakeswitch）与控制器握手，每个交换机与控制器建立一个socket连接，使用<a href="http://www.cnblogs.com/Anker/archive/2013/08/15/3261006.html" target="_blank" rel="noopener">poll方式实现I/O多路复用</a>，整个程序是一个单线程程序。CBench可以工作在以下两种模式：</p>
 <ol>
 <li><p>Lantency模式</p>
 <p> 每次发送一个PacketIn消息，并统计回应，不断重复这样的步骤，统计1秒（默认是1秒）内控制器响应的次数。</p>
@@ -406,21 +408,21 @@
 </li>
 </ol>
 <p>需要注意的是，CBench和控制器建立的是TCP连接，在通信带宽不受限的情况下，CBench在单位时间内能够发送的请求的个数，不仅和CBench自身性能有关，还和控制器的处理能力有关。当控制器处理能力受限时，TCP会自动调整<strong>接收窗口</strong>（rwnd）和<strong>拥塞控制窗口</strong>（cwnd）的大小，CBench发送请求的速率也会降低。</p>
-<h2 id="1-2-CBench的使用"><a href="#1-2-CBench的使用" class="headerlink" title="1.2 CBench的使用"></a>1.2 CBench的使用</h2><p>CBench的使用也很简单，下载<a href="https://github.com/mininet/oflops" target="_blank" rel="external">源码</a>直接编译就可以了。由于这个代码比较老旧，这个project在新版本的操作系统中编译可能会出现问题（亲测在Ubuntu 14.04系统编译可以通过，但在Ubuntu 16.04中编译就有问题）。不过CBench只是这个oflops的一个子模块，因此笔者重构了CBench部分的代码，从而使得CBench可以单独编译，见：<a href="https://github.com/baymaxhuang/cbench" target="_blank" rel="external">重构后的CBench源码和使用</a>, 该版本的代码可以很容易的使用cmake和gcc编译，并用与OpenFlow控制器的测试。另外，由于笔者在控制器开发过程中需要使用其它的南向协议，因而修改了CBench的协议栈相关的代码，见：<a href="https://github.com/baymaxhuang/pof-cbench" target="_blank" rel="external">源码</a>。</p>
+<h2 id="1-2-CBench的使用"><a href="#1-2-CBench的使用" class="headerlink" title="1.2 CBench的使用"></a>1.2 CBench的使用</h2><p>CBench的使用也很简单，下载<a href="https://github.com/mininet/oflops" target="_blank" rel="noopener">源码</a>直接编译就可以了。由于这个代码比较老旧，这个project在新版本的操作系统中编译可能会出现问题（亲测在Ubuntu 14.04系统编译可以通过，但在Ubuntu 16.04中编译就有问题）。不过CBench只是这个oflops的一个子模块，因此笔者重构了CBench部分的代码，从而使得CBench可以单独编译，见：<a href="https://github.com/baymaxhuang/cbench" target="_blank" rel="noopener">重构后的CBench源码和使用</a>, 该版本的代码可以很容易的使用cmake和gcc编译，并用与OpenFlow控制器的测试。另外，由于笔者在控制器开发过程中需要使用其它的南向协议，因而修改了CBench的协议栈相关的代码，见：<a href="https://github.com/baymaxhuang/pof-cbench" target="_blank" rel="noopener">源码</a>。</p>
 <h1 id="2-CBench测试控制器性能"><a href="#2-CBench测试控制器性能" class="headerlink" title="2. CBench测试控制器性能"></a>2. CBench测试控制器性能</h1><p>笔者使用的是基于Java开发的控制器，因此<strong>Java虚拟机内存的分配</strong>对控制器性能的测试影响很大。同时为了避免带宽资源的限制，CBench和控制器都在同一机器上运行。参考：</p>
-<p><a href="https://wiki.onosproject.org/display/ONOS/1.10%3A+Experiment+G+-+Single-node+ONOS+Cbench" target="_blank" rel="external">Single-node ONOS Cbench</a></p>
-<h1 id="3-控制器性能调优"><a href="#3-控制器性能调优" class="headerlink" title="3. 控制器性能调优"></a>3. 控制器性能调优</h1><p>笔者在要完成的是基于ONOS的POF控制器的性能测试。但在测试的过程中发现，基于ONOS的OpenFlow控制器的响应速率可以达到90w/s，而相同环境下基于ONOS的POF控制器的性能只有4w/s。于是笔者尝试使用Java程序的性能分析工具VisuaVM来分析程序的性能，关于VisualVM的使用，参考：<a href="https://www.ibm.com/developerworks/cn/java/j-lo-visualvm/" target="_blank" rel="external">使用 VisualVM 进行性能分析及调优</a>。</p>
+<p><a href="https://wiki.onosproject.org/display/ONOS/1.10%3A+Experiment+G+-+Single-node+ONOS+Cbench" target="_blank" rel="noopener">Single-node ONOS Cbench</a></p>
+<h1 id="3-控制器性能调优"><a href="#3-控制器性能调优" class="headerlink" title="3. 控制器性能调优"></a>3. 控制器性能调优</h1><p>笔者在要完成的是基于ONOS的POF控制器的性能测试。但在测试的过程中发现，基于ONOS的OpenFlow控制器的响应速率可以达到90w/s，而相同环境下基于ONOS的POF控制器的性能只有4w/s。于是笔者尝试使用Java程序的性能分析工具VisuaVM来分析程序的性能，关于VisualVM的使用，参考：<a href="https://www.ibm.com/developerworks/cn/java/j-lo-visualvm/" target="_blank" rel="noopener">使用 VisualVM 进行性能分析及调优</a>。</p>
 <p>下面是使用VisualVM观测到在测试过程中CPU和内存的使用情况：</p>
-<p><img src="http://oj37kd49l.bkt.clouddn.com/cpu&amp;memory.png" alt=""></p>
+<p><img src="/images/cpu&amp;memory.png" alt="ff"></p>
 <p>从图中可以发现，限制控制器性能的主要还是CPU资源，于是进一步使用VisualVM测试了关键方法的耗时：</p>
-<p><img src="http://oj37kd49l.bkt.clouddn.com/Java%20method%20time.png" alt=""></p>
+<p><img src="/images/Java%20method%20time.png" alt="ff"></p>
 <p>可以发现，大量CPU资源不是消耗在了与io相关的操作，而是消耗在了与io无关的object.toString方法。检查程序发现在与程序io相关的decode方法中使用了log.debug方法，而该方法虽然不会在正常模式下输出日志，但是该方法及其内部字符串拼接操作都会执行，造成大量的CPU资源浪费。下面一段简单的验证代码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">int x = 0;</div><div class="line">log.info(&quot;test for inf, x: &#123;&#125;&quot;, x);</div><div class="line">log.debug(&quot;test for debug, x: &#123;&#125;&quot;, test());</div><div class="line">log.info(&quot;test for x: &#123;&#125;&quot;, x);</div><div class="line">        </div><div class="line">int test() &#123;</div><div class="line">    x = x + 1;</div><div class="line">    return x;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">int x = 0;</span><br><span class="line">log.info(&quot;test for inf, x: &#123;&#125;&quot;, x);</span><br><span class="line">log.debug(&quot;test for debug, x: &#123;&#125;&quot;, test());</span><br><span class="line">log.info(&quot;test for x: &#123;&#125;&quot;, x);</span><br><span class="line">        </span><br><span class="line">int test() &#123;</span><br><span class="line">    x = x + 1;</span><br><span class="line">    return x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>以上日志的输出为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">test for inf, x: 0</div><div class="line">test for x: 1</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">test for inf, x: 0</span><br><span class="line">test for x: 1</span><br></pre></td></tr></table></figure>
 <p>这个例子说明log.debug中的test函数也执行了，只是日志没有输出。这也提示我们<strong>使用log日志时一定要谨慎，避免使用没有必要日志输出！！！</strong></p>
 <p>下面是去掉debug相关的日志方法后的关键方法耗时分析：</p>
-<p><img src="http://oj37kd49l.bkt.clouddn.com/pof-snapshot.png" alt=""></p>
+<p><img src="/images/pof-snapshot.png" alt="ff"></p>
 <p>可以发现，现在CPU主要用于io相关的操作了，而测试结果也从4w/s上升到了130w/s。:)</p>
 <p>另外，笔者也发现当请求或响应数据包的长度增加时，测试过程中控制器的<strong>Java虚拟机GC</strong>活动也会增加，造成测试的控制器性能下降，这在控制器测试或性能调优的过程中也是需要注意的。</p>
 <h1 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h1><p>本文分析了CBench工作原理，介绍了CBench使用方法和一些需要注意的问题。另外，本文也从控制器测试的实战经验出发，介绍了Java程序的性能分析和调优方法，以飨读者。</p>
@@ -527,7 +529,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -538,9 +540,7 @@
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/images/avatar.png"
-               alt="Dabai" />
+          <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="Dabai">
           <p class="site-author-name" itemprop="name">Dabai</p>
           <p class="site-description motion-element" itemprop="description">写点可以沉淀下来的东西</p>
         </div>
@@ -653,10 +653,10 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

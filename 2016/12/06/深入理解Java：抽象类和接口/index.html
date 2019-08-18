@@ -6,15 +6,15 @@
 
 
 <html class="theme-next mist use-motion" lang="zh-Hans">
-<head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -29,7 +29,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -63,23 +63,23 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="Java," />
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
 
 
-
-
-
-  <link rel="alternate" href="/atom.xml" title="Dabai的个人博客" type="application/atom+xml" />
+  <meta name="keywords" content="Java,">
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+  <link rel="alternate" href="/atom.xml" title="Dabai的个人博客" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
 
 
 
@@ -87,12 +87,14 @@
 
 
 <meta name="description" content="抽象类和接口是Java中的重要类型，对Java实现灵活的继承和多态有极其重要的作用。关于抽象类和接口的用法教程有很多，本篇文章主要用来记录Java中抽象类和接口的一些重要的概念和特殊的用法，从而加深对抽象类和接口的理解。">
+<meta name="keywords" content="Java">
 <meta property="og:type" content="article">
 <meta property="og:title" content="深入理解Java：抽象类和接口">
 <meta property="og:url" content="http://yoursite.com/2016/12/06/深入理解Java：抽象类和接口/index.html">
 <meta property="og:site_name" content="Dabai的个人博客">
 <meta property="og:description" content="抽象类和接口是Java中的重要类型，对Java实现灵活的继承和多态有极其重要的作用。关于抽象类和接口的用法教程有很多，本篇文章主要用来记录Java中抽象类和接口的一些重要的概念和特殊的用法，从而加深对抽象类和接口的理解。">
-<meta property="og:updated_time" content="2017-09-18T01:32:50.837Z">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-09-18T01:32:50.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解Java：抽象类和接口">
 <meta name="twitter:description" content="抽象类和接口是Java中的重要类型，对Java实现灵活的继承和多态有极其重要的作用。关于抽象类和接口的用法教程有很多，本篇文章主要用来记录Java中抽象类和接口的一些重要的概念和特殊的用法，从而加深对抽象类和接口的理解。">
@@ -123,7 +125,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/12/06/深入理解Java：抽象类和接口/"/>
+  <link rel="canonical" href="http://yoursite.com/2016/12/06/深入理解Java：抽象类和接口/">
 
 
 
@@ -158,7 +160,7 @@
   
 
   <div class="custom-logo-site-title">
-    <a href="/"  class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <span class="site-title">Dabai的个人博客</span>
       <span class="logo-line-after"><i></i></span>
@@ -185,7 +187,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -195,7 +197,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -205,7 +207,7 @@
         <li class="menu-item menu-item-categories">
           <a href="/categories" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
             分类
           </a>
@@ -215,7 +217,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -225,7 +227,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             关于
           </a>
@@ -238,7 +240,7 @@
             <a href="javascript:;" class="popup-trigger">
           
             
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
             
             搜索
           </a>
@@ -287,14 +289,14 @@
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="Dabai">
-    <meta itemprop="description" content="">
+    <meta itemprop="description" content>
     <meta itemprop="image" content="/images/avatar.png">
   </span>
 
   <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
     <meta itemprop="name" content="Dabai的个人博客">
     <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="Dabai的个人博客" src="">
+      <img style="display:none;" itemprop="url image" alt="Dabai的个人博客" src>
     </span>
   </span>
 
@@ -331,7 +333,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
               <span class="post-meta-divider">|</span>
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -394,28 +396,28 @@
 <a id="more"></a>
 <h1 id="1-关于抽象类"><a href="#1-关于抽象类" class="headerlink" title="1. 关于抽象类"></a>1. 关于抽象类</h1><p>抽象类可以不包含抽象方法，在这种情况下，这种类是用来定义子类的基类，这也是抽象类最常用的一种方式。抽象类的抽象方法不能在抽象类中实现，当子类继承一个抽象类时，该子类要么实现父类的所有抽象方法，要么将该子类定义为一个抽象类。虽然不能根据抽象类new一个对象实例，但抽象类也有构造方法，包括默认的和自定义的构造方法，当子类继承抽象类并生成一个对象时，会先调用抽象类的构造方法。</p>
 <h1 id="2-关于接口"><a href="#2-关于接口" class="headerlink" title="2. 关于接口"></a>2. 关于接口</h1><h2 id="2-1-接口的定义和声明"><a href="#2-1-接口的定义和声明" class="headerlink" title="2.1 接口的定义和声明"></a>2.1 接口的定义和声明</h2><p>由于接口中所有的数据域都是public、static、final，而且所有的方法都是public abstract，所以Java允许忽略这些修饰符。因此下面的接口是等价的：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">A</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> k = <span class="number">1</span>;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">m1</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> k = <span class="number">1</span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">m1</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>等价于：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">A</span> </span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> k = <span class="number">1</span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">m1</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> k = <span class="number">1</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">m1</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>接口中不能包含方法的实现，下面定义的接口类型是错误的：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">A</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> k = <span class="number">1</span>;</div><div class="line">    <span class="comment">//接口中所有的方法都是public abstract，抽象方法不能在抽象类中实现</span></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">m1</span><span class="params">()</span> </span>&#123;&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> k = <span class="number">1</span>;</span><br><span class="line">    <span class="comment">//接口中所有的方法都是public abstract，抽象方法不能在抽象类中实现</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">m1</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>但要注意的是继承该接口的子类实现接口的方法时要明确指明该方法的访问权限是public，不能是默认访问权限或其它访问权限，下面的是错误的：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">B</span> <span class="keyword">implements</span> <span class="title">A</span> </span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">m1</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"m1"</span> + k);</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"class B"</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">         B c = <span class="keyword">new</span> B();</div><div class="line">         System.out.println(c);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">B</span> <span class="keyword">implements</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">m1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"m1"</span> + k);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"class B"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">         B c = <span class="keyword">new</span> B();</span><br><span class="line">         System.out.println(c);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>正确的接口继承方式:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">B</span> <span class="keyword">implements</span> <span class="title">A</span> </span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">m1</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"m1"</span> + k);</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"class B"</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">         B c = <span class="keyword">new</span> B();</div><div class="line">         System.out.println(c);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">B</span> <span class="keyword">implements</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">m1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"m1"</span> + k);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"class B"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">         B c = <span class="keyword">new</span> B();</span><br><span class="line">         System.out.println(c);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="2-2-使用接口声明对象的引用"><a href="#2-2-使用接口声明对象的引用" class="headerlink" title="2.2 使用接口声明对象的引用"></a>2.2 使用接口声明对象的引用</h2><p>使用接口声明一个对象的引用时，实际上是将该对象向上转型为对应的接口类型，这样可以方便我们编写代码时与接口打交道，而不用考虑具体的实现。例如，可以使用List声明一个指向ArrayList对象的引用：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">List&lt;Apple&gt; apples = <span class="keyword">new</span> ArrayList&lt;&gt;();</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Apple&gt; apples = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br></pre></td></tr></table></figure>
 <p>在这里，ArrayList已经向上转型为List，这样声明可以方便我们想要修改实现的时候，只需在创建时修改它：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">List&lt;Apple&gt; apples = <span class="keyword">new</span> LinkedList&lt;&gt;();</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Apple&gt; apples = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br></pre></td></tr></table></figure>
 <p>因此，在创建一个具体对象时，应多考虑将其转型为一个对应的接口，然后在其余的代码中使用这个接口。这也呼应了Java编程中的“针对接口编程”的思想了。</p>
 <p><strong>注意：</strong> 由于一个类可以实现多个接口，接口也可以继承，因此可以通的接口类型声明一个对象的引用。而对象的属性是由类本身决定的，因此对该对象的本身来说，没有本质的差异。但由于引用可访问的方法是和声明的接口类型是相关的，因此不同的声明方式对使用者来说有区别的。如：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> ConcurrentMap&lt;Integer,Group&gt; groupMap = <span class="keyword">new</span> ConcurrentHashMap&lt;Integer, Group&gt;();</div><div class="line"><span class="keyword">private</span> Map&lt;Integer,Group&gt; groupMap = <span class="keyword">new</span> ConcurrentHashMap&lt;Integer, Group&gt;();</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> ConcurrentMap&lt;Integer,Group&gt; groupMap = <span class="keyword">new</span> ConcurrentHashMap&lt;Integer, Group&gt;();</span><br><span class="line"><span class="keyword">private</span> Map&lt;Integer,Group&gt; groupMap = <span class="keyword">new</span> ConcurrentHashMap&lt;Integer, Group&gt;();</span><br></pre></td></tr></table></figure>
 <p>这两种声明方式都可以引用一个线程安全的map，但若需要调用ConcurrentHashMap的putIfAbsent方法来保证map里面有且只有一个特定的资源，这种时候，就应该声明为ConcurrentHashMap，表明代码语义是跟一个支持同步语义的map进行交流，而不是一个普通的一般性的map。即使这样，两种声明方式在使用putIfAbsent时没有本质区别，这是因为最终调用的还是ConcurrentHashMap中实现的putIfAbsent方法，是线程安全的。</p>
 <p>参考：</p>
-<p><a href="https://www.zhihu.com/question/27929932" target="_blank" rel="external">知乎：使用不同的接口声明对象引用</a></p>
+<p><a href="https://www.zhihu.com/question/27929932" target="_blank" rel="noopener">知乎：使用不同的接口声明对象引用</a></p>
 <h2 id="2-3-接口与匿名类"><a href="#2-3-接口与匿名类" class="headerlink" title="2.3 接口与匿名类"></a>2.3 接口与匿名类</h2><p>接口不可以new，但可以用new产生一个实现接口的匿名类。<br>如Swing中常用到的new ActionListener() {  } ，就是在{}中重写ActionListen接口中的方法。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">button2.addActionListener (  </div><div class="line">    <span class="keyword">new</span> ActionListener() &#123;  </div><div class="line">        <span class="function">publicvoid <span class="title">actionPerformed</span><span class="params">(ActionEvent e)</span> </span>&#123;  </div><div class="line">            System.out.println(<span class="string">"你按了按钮"</span>);  </div><div class="line">    &#125;  </div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<h2 id="2-4-函数式接口"><a href="#2-4-函数式接口" class="headerlink" title="2.4 函数式接口"></a>2.4 函数式接口</h2><p>当一个接口只有一个抽象方法时，这个接口就是函数式接口，函数式接口用作lambda表达式的类型。详细内容请参考：<br><a href="https://baymaxhuang.github.io/2016/12/04/java-8-%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Alambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" target="_blank" rel="external">Java 8 新特性：lambda表达式</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">button2.addActionListener (  </span><br><span class="line">    <span class="keyword">new</span> ActionListener() &#123;  </span><br><span class="line">        <span class="function">publicvoid <span class="title">actionPerformed</span><span class="params">(ActionEvent e)</span> </span>&#123;  </span><br><span class="line">            System.out.println(<span class="string">"你按了按钮"</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="2-4-函数式接口"><a href="#2-4-函数式接口" class="headerlink" title="2.4 函数式接口"></a>2.4 函数式接口</h2><p>当一个接口只有一个抽象方法时，这个接口就是函数式接口，函数式接口用作lambda表达式的类型。详细内容请参考：<br><a href="https://baymaxhuang.github.io/2016/12/04/java-8-%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Alambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" target="_blank" rel="noopener">Java 8 新特性：lambda表达式</a></p>
 <h2 id="2-5-Java-8接口中的默认方法"><a href="#2-5-Java-8接口中的默认方法" class="headerlink" title="2.5 Java 8接口中的默认方法"></a>2.5 Java 8接口中的默认方法</h2><p>Java 8中接口可以实现方法，而不需要实现类去实现方法，通过在接口方法中加入关键字default，就可以在接口中实现方法了。</p>
 <p>为什么要有这个特性？首先，之前的接口是个双刃剑，好处是面向抽象而不是面向具体编程，缺陷是，当需要修改接口时候，需要修改全部实现该接口的类，目前的java 8之前的集合框架没有foreach方法，通常能想到的解决办法是在JDK里给相关的接口添加新的方法及实现。然而，对于已经发布的版本，是没法在给接口添加新方法的同时不影响已有的实现。所以引进的默认方法。他们的目的是为了解决接口的修改与现有的实现不兼容的问题。</p>
 <p>引入接口的默认方法后，接口和抽象类有了更多的相同点了，但二者依然有区别，下面是Java 8抽象类和接口的对比：</p>
@@ -432,7 +434,7 @@
 <li>接口中定义的变量默认是public static final 型，且必须给其初值，所以实现类中不能改变其值；抽象类中的变量默认是 friendly 型，其值可以在子类中重新定义，也可以重新赋值。 </li>
 </ol>
 <p><strong>注意：</strong> 若在实现类中实现了接口的默认方法，则最终会调用实现类的方法；若子接口覆盖了父接口的默认方法，则会调用子接口的默认方法；若子接口声明了和父接口一样的方法但没有实现，那么无论该方法是不是父接口的默认方法，在实现类中都要实现。看下面的例子：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">A</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"Calling A.test()"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">B</span> <span class="keyword">extends</span> <span class="title">A</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"Calling B.foo()"</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">C</span> <span class="keyword">implements</span> <span class="title">B</span> </span>&#123;</div><div class="line">    <span class="comment">//test() must be implemented in this class</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"Calling C.test()"</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">        A obj = <span class="keyword">new</span> C();</div><div class="line">        obj.foo();<span class="comment">//Calling B.foo()</span></div><div class="line">        obj.test();<span class="comment">//Calling C.test()</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Calling A.test()"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">B</span> <span class="keyword">extends</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Calling B.foo()"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">C</span> <span class="keyword">implements</span> <span class="title">B</span> </span>&#123;</span><br><span class="line">    <span class="comment">//test() must be implemented in this class</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Calling C.test()"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        A obj = <span class="keyword">new</span> C();</span><br><span class="line">        obj.foo();<span class="comment">//Calling B.foo()</span></span><br><span class="line">        obj.test();<span class="comment">//Calling C.test()</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>关于接口的默认方法在Java 8的JDK库中有很多使用，可以参照Map，ConcurrentMap，ConcurrentHashMap学习接口的默认方法。</p>
 
       
@@ -533,7 +535,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -544,9 +546,7 @@
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/images/avatar.png"
-               alt="Dabai" />
+          <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="Dabai">
           <p class="site-author-name" itemprop="name">Dabai</p>
           <p class="site-description motion-element" itemprop="description">写点可以沉淀下来的东西</p>
         </div>
@@ -659,10 +659,10 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
